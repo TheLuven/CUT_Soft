@@ -1,17 +1,29 @@
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
-public class Main {
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+
+public class Main extends Application {
+
     public static void main(String[] args) {
-        // Press Opt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        launch(args);
+    }
 
-        // Press Ctrl+R or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+    @Override
+    public void start(Stage primaryStage) {
+        // Créer un libellé (Label) avec du texte
+        Label label = new Label("Bonjour, ceci est ma fenêtre JavaFX!");
 
-            // Press Ctrl+D to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Cmd+F8.
-            System.out.println("i = " + i);
-        }
+        // Créer une scène (Scene) et y ajouter le libellé
+        Scene scene = new Scene(label, 300, 200);
+
+        // Définir la scène de la fenêtre principale
+        primaryStage.setScene(scene);
+
+        // Définir le titre de la fenêtre
+        primaryStage.setTitle("Ma Fenêtre JavaFX");
+
+        // Afficher la fenêtre
+        primaryStage.show();
     }
 }
