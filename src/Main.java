@@ -1,6 +1,10 @@
+import IHM.Window.Window;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -11,19 +15,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Créer un libellé (Label) avec du texte
-        Label label = new Label("Bonjour, ceci est ma fenêtre JavaFX!");
-
-        // Créer une scène (Scene) et y ajouter le libellé
-        Scene scene = new Scene(label, 300, 200);
-
-        // Définir la scène de la fenêtre principale
-        primaryStage.setScene(scene);
-
-        // Définir le titre de la fenêtre
-        primaryStage.setTitle("Ma Fenêtre JavaFX");
-
-        // Afficher la fenêtre
+        Window myWindow = new Window();
+        primaryStage.setScene(myWindow.getScene());
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setWidth(screenBounds.getWidth());
+        primaryStage.setHeight(screenBounds.getHeight());
+        primaryStage.setMinHeight(720);
+        primaryStage.setMinWidth(1280);
+        primaryStage.setTitle("CUT : Class Ultimate Team");
         primaryStage.show();
     }
 }
