@@ -8,6 +8,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="JavaFX" level="project" />
+    <orderEntry type="library" name="JavaFXMac" level="project" />
+    <orderEntry type="library" name="JavaFXWin" level="project" />
   </component>
 </module>
