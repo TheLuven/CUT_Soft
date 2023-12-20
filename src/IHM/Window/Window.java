@@ -141,4 +141,12 @@ public class Window {
     public Scene getScene() {
         return scene;
     }
+
+    public VBox getScreen(){ return  screen; }
+
+    public HBox getTopPanel(){ return topPanel; }
+
+    public HBox getBotPanel(){ return botPanel; }
+
+    public HBox getMiddlePanel(){ return middlePanel; }
 }
