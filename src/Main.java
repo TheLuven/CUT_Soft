@@ -1,4 +1,6 @@
 import IHM.Window.Window;
+import database.DatabaseConnection;
+import database.DatabaseManager;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -10,6 +12,9 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     public static void main(String[] args) {
+        DatabaseConnection database = new DatabaseConnection("jdbc:mysql://localhost:8889/base","root","root");
+        DatabaseManager databaseManager = new DatabaseManager(database);
+        databaseManager.getActorByID();
         launch(args);
     }
 
