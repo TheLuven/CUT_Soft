@@ -53,7 +53,7 @@ public class DatabaseManager {
     public Actor getActorByID(int id) {
         try {
             Connection connection = this.database.getConnection();
-            String selectQuery = "SELECT name,surname,email,gender,role,className,description FROM person WHERE id=" + id;
+            String selectQuery = "SELECT p.name,p.surname,p.email,p.gender,p.role,p.description,c.className FROM person as p,class as c,classPerson as cp WHERE p.id=" + id+ " AND cp.person = "+id+" AND cp.class = c.id";
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
             // Execute the query and get the result
             ResultSet resultSet = preparedStatement.executeQuery();
