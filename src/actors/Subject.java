@@ -5,11 +5,17 @@ import java.util.ArrayList;
 public class Subject {
     String subjectName;
     Actor teacher;
-    ArrayList<Class> classes;
 
-    public Subject(String subjectName, Actor teacher, ArrayList<Class> classes){
-        this.classes=classes;
+    public Subject(String subjectName, Actor teacher){
         this.teacher=teacher;
         this.subjectName=subjectName;
+    }
+
+    @Override
+    public String toString() {
+        return "Subject{" +
+                "subjectName = '" + subjectName + '\'' +
+                ", teacher = " + teacher.name +" "+teacher.surname+
+                '}';
     }
 }
