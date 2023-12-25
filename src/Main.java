@@ -14,9 +14,10 @@ public class Main extends Application {
     public static void main(String[] args) {
         DatabaseConnection database = new DatabaseConnection("jdbc:mysql://localhost:8889/base","root","root");
         DatabaseManager databaseManager = new DatabaseManager(database);
-        System.out.println(databaseManager.getActorByID(1).toString());
-        databaseManager.getActorByID(1).setSurname("test");
-        System.out.println(databaseManager.getActorByID(1).toString());
+        System.out.println(databaseManager.getStudentByID(7).toString());
+        System.out.println(databaseManager.getStudentClassByID(2).toString());
+        /*databaseManager.getActorByID(1).setSurname("test");
+        System.out.println(databaseManager.getActorByID(1).toString());*/
         launch(args);
     }
 
