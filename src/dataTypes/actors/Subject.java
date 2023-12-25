@@ -1,6 +1,4 @@
-package actors;
-
-import java.util.ArrayList;
+package dataTypes.actors;
 
 public class Subject {
     String subjectName;
