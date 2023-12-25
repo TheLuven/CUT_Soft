@@ -1,8 +1,7 @@
 package database;
 
-import actors.Actor;
+import actors.*;
 import actors.Class;
-import actors.Subject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,10 +12,23 @@ import java.util.ArrayList;
 public class DatabaseManager {
     DatabaseConnection database;
 
+    /**
+     * @brief Constructor of the DatabaseManager class. This class provide you some tools to access all data from the database.
+     * @author Victor VENULETH
+     * @param database The database from DatabaseConnection.java
+     */
     public DatabaseManager(DatabaseConnection database) {
         this.database = database;
     }
 
+    /**
+     * @brief This function allows you to update simple values from a simple querry.
+     * @author Victor VENULETH
+     * @param id
+     * @param value
+     * @param tableName
+     * @param columnName
+     */
     public void simpleUpdateQuery(int id, String value, String tableName, String columnName) {
         try {
             Connection connection = this.database.getConnection();
@@ -34,6 +46,14 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * @brief This function allows you to access simple values from a simple querry.
+     * @author Victor VENULETH
+     * @param id
+     * @param value
+     * @param tableName
+     * @return It returns a String that may need to be parsed in int for example.
+     */
     public String simpleGetQuery(int id, String value, String tableName) {
         try {
             Connection connection = this.database.getConnection();
@@ -53,10 +73,16 @@ public class DatabaseManager {
         }
     }
 
-    public Actor getStudentByID(int id) {
+    /**
+     * @brief This function allow you to retrieve the student using its ID.
+     * @author Victor VENULETH
+     * @param id
+     * @return the student in the Student.java object.
+     */
+    public Student getStudentByID(int id) {
         try {
             Connection connection = this.database.getConnection();
-            String selectQuery = "SELECT p.name,p.surname,p.email,p.gender,p.role,p.description,c.className FROM person as p,class as c,classPerson as cp WHERE p.id=" + id+ " AND cp.person = "+id+" AND cp.class = c.id";
+            String selectQuery = "SELECT p.name,p.surname,p.email,p.gender,p.role,p.description,c.className FROM person as p,class as c,classPerson as cp WHERE p.id=" + id+ " AND cp.person = "+id+" AND cp.class = c.id AND p.role='student'";
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
             // Execute the query and get the result
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -68,7 +94,7 @@ public class DatabaseManager {
                 String description = resultSet.getString("description");
                 String role = resultSet.getString("role");
                 String className = resultSet.getString("className");
-                return new Actor(this, id, name, surname, role, email, description, className, gender);
+                return new Student(this, id, name, surname, email, description, className, gender);
             }
             return null;
         } catch (Exception e) {
@@ -76,10 +102,17 @@ public class DatabaseManager {
             return null;
         }
     }
-    public Actor getTeacherByID(int id) {
+
+    /**
+     * @brief This function allows you to access teacher using its ID.
+     * @author Victor VENULETH
+     * @param id
+     * @return the teacher in the Teacher.java object
+     */
+    public Teacher getTeacherByID(int id) {
         try {
             Connection connection = this.database.getConnection();
-            String selectQuery = "SELECT p.name,p.surname,p.email,p.gender,p.role,p.description FROM person as p WHERE p.id=" + id;
+            String selectQuery = "SELECT p.name,p.surname,p.email,p.gender,p.role,p.description FROM person as p WHERE p.role='teacher' AND p.id=" + id;
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
             // Execute the query and get the result
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -90,7 +123,7 @@ public class DatabaseManager {
                 String gender = resultSet.getString("gender");
                 String description = resultSet.getString("description");
                 String role = resultSet.getString("role");
-                return new Actor(this, id, name, surname, role, email, description, null, gender);
+                return new Teacher(this, id, name, surname, email, description, gender);
             }
             return null;
         } catch (Exception e) {
@@ -98,6 +131,13 @@ public class DatabaseManager {
             return null;
         }
     }
+
+    /**
+     * @brief This function allows you to access the subject using its ID.
+     * @author Victor VENULETH
+     * @param id
+     * @return the Subject in the Subject.java object.
+     */
     public Subject getSubjectByID(int id) {
         try {
             Connection connection = this.database.getConnection();
@@ -114,11 +154,18 @@ public class DatabaseManager {
             return null;
         }
     }
-    public ArrayList<Actor> getClassStudentsByID(int id){
-        ArrayList<Actor> students = new ArrayList<Actor>();
+
+    /**
+     * @brief This function allows you to retrieve all the Students in a class.
+     * @author Victor VENULETH
+     * @param id
+     * @return the List of all student of a defined class.
+     */
+    public ArrayList<Student> getClassStudentsByID(int id){
+        ArrayList<Student> students = new ArrayList<>();
         try {
             Connection connection = this.database.getConnection();
-            String selectQuery = "SELECT person FROM classPerson WHERE class="+id;
+            String selectQuery = "SELECT person FROM classPerson cp, person p WHERE class="+id+" AND p.role='student' AND cp.person = p.id";
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
             // Execute the query and get the result
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -131,8 +178,15 @@ public class DatabaseManager {
         }
         return students;
     }
+
+    /**
+     * @brief This function allows you to retrieve all subjects of a class, using its ID
+     * @author Victor VENULETH
+     * @param id
+     * @return it returns all Subjects in an ArrayList
+     */
     public ArrayList<Subject> getClassSubjectsByID(int id){
-        ArrayList<Subject> subjects = new ArrayList<Subject>();
+        ArrayList<Subject> subjects = new ArrayList<>();
         try {
             Connection connection = this.database.getConnection();
             String selectQuery = "SELECT subject  FROM classSubject cs WHERE cs.class = "+id;
@@ -148,6 +202,13 @@ public class DatabaseManager {
         }
         return subjects;
     }
+
+    /**
+     * @brief This function allows you retrieve a class using its ID
+     * @author Victor VENULETH
+     * @param id
+     * @return the class in a Class.Java object
+     */
     public Class getClassByID(int id){
         try {
             Connection connection = this.database.getConnection();
@@ -157,9 +218,31 @@ public class DatabaseManager {
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             String className = resultSet.getString("className");
-            ArrayList<Actor> students = getClassStudentsByID(id);
+            ArrayList<Student> students = getClassStudentsByID(id);
             ArrayList<Subject> subjects = getClassSubjectsByID(id);
             return new Class(students,className,subjects);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * @brief This function allows you to retrieve the class of a Student.
+     * @author Victor VENULETH
+     * @param id
+     * @return the class in a Class.java object
+     */
+    public Class getStudentClassByID(int id){
+        try {
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT class  FROM classPerson cp WHERE person ="+id;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            int classID = resultSet.getInt("class");
+            return getClassByID(classID);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
