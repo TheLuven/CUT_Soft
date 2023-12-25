@@ -1,7 +1,8 @@
 package database;
 
-import actors.*;
-import actors.Class;
+import dataTypes.ClassMap;
+import dataTypes.actors.*;
+import dataTypes.actors.Class;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -154,6 +155,21 @@ public class DatabaseManager {
             return null;
         }
     }
+    public Subject getSubjectByID(int id,Teacher teacher) {
+        try {
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT subject,teacher FROM subject WHERE id="+id;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            String subject = resultSet.getString("subject");
+            return new Subject(subject,teacher);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     /**
      * @brief This function allows you to retrieve all the Students in a class.
@@ -202,6 +218,23 @@ public class DatabaseManager {
         }
         return subjects;
     }
+    public ArrayList<Subject> getClassSubjectsByID(int id,Teacher teacher){
+        ArrayList<Subject> subjects = new ArrayList<>();
+        try {
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT subject  FROM classSubject cs WHERE cs.class = "+id;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                subjects.add(getSubjectByID(resultSet.getInt("subject"),teacher));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return subjects;
+    }
 
     /**
      * @brief This function allows you retrieve a class using its ID
@@ -226,6 +259,23 @@ public class DatabaseManager {
             return null;
         }
     }
+    public Class getClassByID(int id,Teacher teacher){
+        try {
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT className  FROM class WHERE id="+id;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            String className = resultSet.getString("className");
+            ArrayList<Student> students = getClassStudentsByID(id);
+            ArrayList<Subject> subjects = getClassSubjectsByID(id,teacher);
+            return new Class(students,className,subjects);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     /**
      * @brief This function allows you to retrieve the class of a Student.
@@ -243,6 +293,26 @@ public class DatabaseManager {
             resultSet.next();
             int classID = resultSet.getInt("class");
             return getClassByID(classID);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public ArrayList<ClassMap> getAllTeacherClassMapByTeacher(Teacher teacher){
+        ArrayList<ClassMap> classMaps = new ArrayList<>();
+        try {
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT cs.class,cs.subject  FROM classSubject cs, person p,subject s  WHERE p.`role` = 'teacher' AND s.teacher = p.id AND s.id = cs.subject AND p.id ="+teacher.id;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                int classID = resultSet.getInt("class");
+                int subjectID = resultSet.getInt("subject");
+                classMaps.add(new ClassMap(teacher,getSubjectByID(subjectID,teacher),getClassByID(classID,teacher)));
+            }
+            return classMaps;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
