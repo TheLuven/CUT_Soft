@@ -111,16 +111,8 @@ public class Window {
         botPanel.getChildren().clear();
         screen.getChildren().clear();
         mainWindow.getChildren().clear();
-        if(isConnected){
-            topPanel.getChildren().addAll(logo,topPanelBlank,profileButton, disconnectButton);
-            screen.getChildren().addAll(topPanel,middlePanel,botPanel);
-        }else{
-            Button login = new Button("Login");
-            login.setOnAction(event -> loggingTest());
-            middlePanel.getChildren().add(login);
-            topPanel.getChildren().addAll(logo, topPanelBlank);
-            screen.getChildren().addAll(topPanel,middlePanel);
-        }
+        topPanel.getChildren().addAll(logo,topPanelBlank,profileButton, disconnectButton);
+        screen.getChildren().addAll(topPanel,middlePanel,botPanel);
         HBox.setHgrow(disconnectButton, Priority.NEVER);
         HBox.setHgrow(topPanelBlank, Priority.ALWAYS);
         VBox.setVgrow(topPanel,Priority.NEVER);
