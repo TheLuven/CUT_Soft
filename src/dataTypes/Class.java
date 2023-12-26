@@ -1,4 +1,7 @@
-package dataTypes.actors;
+package dataTypes;
+
+import dataTypes.Subject;
+import dataTypes.actors.Student;
 
 import java.util.ArrayList;
 
