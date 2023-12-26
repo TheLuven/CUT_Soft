@@ -1,3 +1,4 @@
+import IHM.Gestion.Gestion;
 import IHM.Window.Window;
 import database.DatabaseConnection;
 import database.DatabaseManager;
@@ -12,9 +13,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     public static void main(String[] args) {
-        DatabaseConnection database = new DatabaseConnection("jdbc:mysql://localhost:8889/base","root","root");
-        DatabaseManager databaseManager = new DatabaseManager(database);
-        System.out.println(databaseManager.getTeacherByID(10).toString());
+
+        //System.out.println(databaseManager.getTeacherByID(10).toString());
         /*System.out.println(databaseManager.getStudentByID(7).toString());
         System.out.println(databaseManager.getStudentClassByID(2).toString());
         databaseManager.getActorByID(1).setSurname("test");
@@ -24,9 +24,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Window myWindow = new Window();
-        primaryStage.setScene(myWindow.getScene());
+        DatabaseConnection database = new DatabaseConnection("jdbc:mysql://localhost:8889/base","root","root");
+        DatabaseManager databaseManager = new DatabaseManager(database);
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        Gestion gestion = new Gestion(databaseManager.getAllTeacherClassMapByTeacher(databaseManager.getTeacherByID(10)),screenBounds);
+        primaryStage.setScene(gestion.getScene());
         primaryStage.setWidth(screenBounds.getWidth());
         primaryStage.setHeight(screenBounds.getHeight());
         primaryStage.setMinHeight(720);
