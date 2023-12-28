@@ -1,6 +1,6 @@
 package dataTypes.actors;
 
-import dataTypes.ClassMap;
+import dataTypes.classMap.ClassMap;
 import database.DatabaseManager;
 
 import java.util.ArrayList;
