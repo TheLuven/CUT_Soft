@@ -1,9 +1,9 @@
 package database;
 
-import dataTypes.ClassMap;
-import dataTypes.Subject;
+import dataTypes.classMap.ClassMap;
+import dataTypes.classMap.Subject;
 import dataTypes.actors.*;
-import dataTypes.Class;
+import dataTypes.classMap.Class;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
