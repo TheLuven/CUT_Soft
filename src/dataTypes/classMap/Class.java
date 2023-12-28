@@ -1,6 +1,5 @@
-package dataTypes;
+package dataTypes.classMap;
 
-import dataTypes.Subject;
 import dataTypes.actors.Student;
 
 import java.util.ArrayList;

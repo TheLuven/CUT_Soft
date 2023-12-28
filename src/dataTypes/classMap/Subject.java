@@ -1,4 +1,4 @@
-package dataTypes;
+package dataTypes.classMap;
 
 import dataTypes.actors.Actor;
 import dataTypes.actors.Teacher;
