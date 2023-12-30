@@ -2,6 +2,8 @@ package dataTypes.classMap.object;
 
 import dataTypes.actors.Student;
 
+import java.util.ArrayList;
+
 public class Desk {
     private double x;
     private double y;
@@ -10,6 +12,7 @@ public class Desk {
     private final double width = 1;
     private final double height = 0.60;
     private Student student;
+
     public Desk(double x, double y, String type, DeskOrientation orientation){
         this.type = type;
         this.x = x;
@@ -64,5 +67,21 @@ public class Desk {
     }
     public DeskOrientation getOrientation(){
         return this.orientation;
+    }
+    public static ArrayList<Desk> getDeskTypeList() {
+        ArrayList<Desk> deskTypeList = new ArrayList<>();
+        deskTypeList.add(new Desk(0,0,"mono",DeskOrientation.horizontal));
+        deskTypeList.add(new Desk(0,0,"mono",DeskOrientation.vertical));
+        deskTypeList.add(new Desk(0,0,"duo",DeskOrientation.horizontal));
+        deskTypeList.add(new Desk(0,0,"duo",DeskOrientation.vertical));
+        return deskTypeList;
+    }
+
+    @Override
+    public String toString() {
+        return "Desk{" +
+                "type='" + type + '\'' +
+                ", orientation=" + orientation +
+                '}';
     }
 }

@@ -87,12 +87,13 @@ public class ClassMapCard {
             pane.setOpacity(0.7);
             pane.setStyle("-fx-background-color: #000000;");
             blur.getContent().add(pane);
-            Slider classWidth = new Slider(5,100,5);
-            Slider classHeigth = new Slider(5,100,5);
+            Slider classWidth = new Slider(5,50,6);
+            Slider classHeigth = new Slider(5,50,10);
             classWidth.setShowTickLabels(true);
             classHeigth.setShowTickLabels(true);
             ChoiceBox classOrientation = new ChoiceBox();
             classOrientation.getItems().addAll("NORTH","EAST","SOUTH","WEST");
+            classOrientation.getSelectionModel().selectFirst();
             TextArea textArea = new TextArea("Draft name");
             Button confirmButton = new Button("Confirm");
             //The text area cant exceed 20 characters and delete \n

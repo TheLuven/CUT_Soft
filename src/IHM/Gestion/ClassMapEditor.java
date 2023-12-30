@@ -8,9 +8,7 @@ import dataTypes.classMap.object.BoardOrientation;
 import dataTypes.classMap.object.DeskOrientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -35,6 +33,7 @@ public class ClassMapEditor {
     private double lastX = 0;
     private double lastY = 0;
     private ListView<Student> listView;
+    private ListView<Desk> deskView;
     private Gestion gestion;
     private Button saveButton;
     private Button cancelButton;
@@ -63,7 +62,7 @@ public class ClassMapEditor {
         this.window.getBotPanel().getChildren().addAll(this.saveButton,this.cancelButton,this.backButton);
     }
     public void display(){
-        diplayStudentList();
+        diplayTabPane();
         displayRoom();
         displayDesk();
         displayBoard();
@@ -286,13 +285,25 @@ public class ClassMapEditor {
             event.consume();
         });
     }
-    public void diplayStudentList(){
+    public void diplayTabPane(){
         HBox container = this.window.getMiddlePanel();
+        TabPane tabPane = new TabPane();
+        Tab Student = new Tab("Student");
+        tabPane.getTabs().add(Student);
+        Tab Desk = new Tab("Desk");
+        tabPane.getTabs().add(Desk);
+        //Add the list view in the tab
         this.listView=new ListView<>();
-        this.splitView.getItems().addAll(listView,this.mapEditor);
+        this.splitView.getItems().addAll(tabPane,this.mapEditor);
         listView.getItems().addAll(this.studentList);
+        this.deskView=new ListView<>();
+        this.deskView.getItems().addAll(dataTypes.classMap.object.Desk.getDeskTypeList());
+        Desk.setContent(deskView);
+        Student.setContent(listView);
         container.getChildren().add(splitView);
-        listView.setMaxWidth(this.screenBounds.getWidth()/3);
+        tabPane.setMaxWidth(this.screenBounds.getWidth()/5);
+        //Cant close the tab
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         //add a mouse event for each student
         listView.setOnMouseClicked(event -> {
             Student student = listView.getSelectionModel().getSelectedItem();
@@ -312,6 +323,7 @@ public class ClassMapEditor {
             }
             event.consume();
         });
+
     }
 
     public Scene getScene(){
