@@ -15,6 +15,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import IHM.Window.Window;
 
@@ -191,7 +192,7 @@ public class ClassMapEditor {
                 deskBox.setLayoutX(desk.getX()*roomWidthRatio);
                 deskBox.setLayoutY(desk.getY()*roomHeightRatio);
                 deskBox.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                addDropEvent(deskBox);
+                addDropEvent(deskBox,desk);
                 this.room.getChildren().add(deskBox);
             }
             else if(desk.getType().equals("duo")){
@@ -208,16 +209,16 @@ public class ClassMapEditor {
                     deskBox2.setLayoutX(desk.getX()*roomWidthRatio+desk.getWidth()*roomWidthRatio/2);
                     deskBox2.setLayoutY(desk.getY()*roomHeightRatio);
                     deskBox2.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                    addDropEvent(deskBox1);
-                    addDropEvent(deskBox2);
+                    addDropEvent(deskBox1,desk);
+                    addDropEvent(deskBox2,desk);
                     this.room.getChildren().addAll(deskBox1,deskBox2);
                 }
             }
         }
     }
-    public void addDropEvent(Pane deskBox){
+    public void addDropEvent(Pane deskBox,Desk desk){
         //autorize drag and drop from different elements
-        deskBox.setOnDragEntered(event -> {
+        /*deskBox.setOnDragEntered(event -> {
             System.out.println("Entered detected on : " + deskBox.getLayoutX());
             System.out.println("Entered detected on : " + deskBox.getLayoutY());
             event.consume();
@@ -226,7 +227,7 @@ public class ClassMapEditor {
             System.out.println("Exited detected on : " + deskBox.getLayoutX());
             System.out.println("Exited detected on : " + deskBox.getLayoutY());
             event.consume();
-        });
+        });*/
         deskBox.setOnDragOver(event -> {
             event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             event.consume();
@@ -236,7 +237,17 @@ public class ClassMapEditor {
             //delete the student from the list
             listView.getItems().remove(student);
             //add the student to the desk
-            deskBox.getChildren().add(new Button(student.getSurname()));
+            Text studentName = new Text(student.getName());
+            Text studentSurname = new Text(student.getSurname());
+            //center student name and change the color to white
+            studentSurname.setLayoutX(deskBox.getPrefWidth()/2-studentSurname.getLayoutBounds().getWidth()/2);
+            studentSurname.setLayoutY(deskBox.getPrefHeight()/2-studentSurname.getLayoutBounds().getHeight()/2+studentName.getLayoutBounds().getHeight());
+            studentSurname.setStyle("-fx-fill: #ffffff;");
+            studentName.setLayoutX(deskBox.getPrefWidth()/2-studentName.getLayoutBounds().getWidth()/2);
+            studentName.setLayoutY(deskBox.getPrefHeight()/2-studentName.getLayoutBounds().getHeight()/2);
+            studentName.setStyle("-fx-fill: #ffffff;");
+            deskBox.getChildren().addAll(studentName,studentSurname);
+            desk.setStudent(student);
             event.setDropCompleted(true);
             event.consume();
         });
@@ -260,10 +271,7 @@ public class ClassMapEditor {
         listView.setOnDragDetected(event -> {
             Student student = listView.getSelectionModel().getSelectedItem();
             if (student != null) {
-                /* drag was detected, start a drag-and-drop gesture*/
-                /* allow any transfer mode */
                 Dragboard db = listView.startDragAndDrop(TransferMode.ANY);
-                /* Put a string on a dragboard */
                 ClipboardContent content = new ClipboardContent();
                 content.putString("");
                 db.setContent(content);
