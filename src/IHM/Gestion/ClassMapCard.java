@@ -26,10 +26,8 @@ public class ClassMapCard {
     public ClassMapCard(ClassMap classMap, Stage stage){
         this.classMap = classMap;
         this.card = new VBox();
-        this.drafts = new ArrayList<>();
-        this.drafts.add(new ClassMapLayer("test"));
-        this.drafts.add(new ClassMapLayer("test2"));
-        this.drafts.add(new ClassMapLayer("test3"));
+        this.drafts = classMap.drafts;
+        this.currentClassMap = classMap.currentClassMap;
         this.mainStage=stage;
         cardGenerator();
     }
