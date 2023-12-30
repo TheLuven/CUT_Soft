@@ -2,12 +2,12 @@ package IHM.Gestion;
 
 import dataTypes.classMap.ClassMap;
 import dataTypes.classMap.ClassMapLayer;
+import dataTypes.classMap.object.BoardOrientation;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -68,34 +68,68 @@ public class ClassMapCard {
 
         //onclick on the createNewDraft button : open a popup where you can enter the name of a new draft and confirm the creation with a button
         createNewDraft.setOnAction(event -> {
-            HBox content = new HBox();
+            VBox content = new VBox();
             HBox topBar = new HBox();
             VBox vBox = new VBox();
             vBox.setStyle("-fx-border-color: #ffffff; -fx-background-color: #1c1c1e;");
             content.setStyle("-fx-border-color: #ffffff;");
             topBar.setStyle("-fx-border-color: #ffffff;");
             content.setPadding(new Insets(10,10,10,10));
+            content.setSpacing(5);
             Popup popup = new Popup();
-            popup.setX(300);
-            popup.setY(200);
+            Popup blur = new Popup();
+            Pane pane = new Pane();
+            //Set blur size to screen size
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            pane.setPrefWidth(screenBounds.getWidth());
+            pane.setPrefHeight(screenBounds.getHeight());
+            //Change the opacity of blur to 50%
+            pane.setOpacity(0.7);
+            pane.setStyle("-fx-background-color: #000000;");
+            blur.getContent().add(pane);
+            Slider classWidth = new Slider(5,100,5);
+            Slider classHeigth = new Slider(5,100,5);
+            classWidth.setShowTickLabels(true);
+            classHeigth.setShowTickLabels(true);
+            ChoiceBox classOrientation = new ChoiceBox();
+            classOrientation.getItems().addAll("NORTH","EAST","SOUTH","WEST");
             TextArea textArea = new TextArea("Draft name");
             Button confirmButton = new Button("Confirm");
-            //The text area cant exceed 20 characters
+            //The text area cant exceed 20 characters and delete \n
             textArea.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue.length() > 20) {
                     textArea.setText(oldValue);
                 }
+                if(newValue.contains("\n")){
+                    textArea.setText(newValue.replace("\n",""));
+                }
             });
-            //The text area is one line of height
-            textArea.setPrefHeight(25);
+            textArea.setPrefHeight(12);
             textArea.setPrefWidth(200);
+            //There can only be one line on the text area
+            textArea.setWrapText(true);
+            textArea.setPrefColumnCount(1);
+            textArea.setPrefRowCount(1);
+            textArea.disableProperty().set(false);
             confirmButton.disableProperty().set(true);
+            textArea.setStyle("-fx-border-color: red;");
             confirmButton.setOnAction(event1 -> {
-                if(!textArea.getText().equals("Draft name") || !textArea.getText().equals("")){
-                    ClassMapLayer draft = new ClassMapLayer(textArea.getText());
+                if(!textArea.getText().equals("Draft name") && !textArea.getText().equals("") && !classOrientation.getSelectionModel().isEmpty()){
+                    BoardOrientation orientation;
+                    if (classOrientation.getSelectionModel().getSelectedItem().equals("NORTH")){
+                        orientation =  BoardOrientation.north;
+                    }else if (classOrientation.getSelectionModel().getSelectedItem().equals("EAST")){
+                        orientation =  BoardOrientation.east;
+                    }else if (classOrientation.getSelectionModel().getSelectedItem().equals("SOUTH")){
+                        orientation =  BoardOrientation.south;
+                    }else{
+                        orientation =  BoardOrientation.west;
+                    }
+                    ClassMapLayer draft = new ClassMapLayer(textArea.getText(),classWidth.getValue(),classHeigth.getValue(),orientation);
                     ClassMapEditor classMapEditor = new ClassMapEditor(this.classMap,draft, Screen.getPrimary().getVisualBounds(),this.mainStage,this.gestion);
                     this.mainStage.setScene(classMapEditor.getScene());
                     popup.hide();
+                    blur.hide();
                 }
             });
             //Delete the default text when the user click on the text area
@@ -109,9 +143,11 @@ public class ClassMapCard {
                 if(newValue.equals("") || newValue.equals("Draft name")){
                     textArea.setStyle("-fx-border-color: red;");
                     confirmButton.disableProperty().set(true);
-                }else{
+                }else if(!classOrientation.getSelectionModel().isEmpty()){
                     textArea.setStyle("-fx-border-color: #ffffff;");
                     confirmButton.disableProperty().set(false);
+                }else{
+                    textArea.setStyle("-fx-border-color: #ffffff;");
                 }
                 for(ClassMapLayer s : drafts){
                     if(s.getName().equals(newValue)){
@@ -120,16 +156,43 @@ public class ClassMapCard {
                     }
                 }
             });
+            //Enable button if the user choose an orientation
+            classOrientation.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                if(!textArea.getText().equals("Draft name") && !textArea.getText().equals("")){
+                    textArea.setStyle("-fx-border-color: #ffffff;");
+                    confirmButton.disableProperty().set(false);
+                }
+            });
             Button closeButton = new Button("X");
             closeButton.setOnAction(event1 -> {
+                popup.hide();
+                blur.hide();
+            });
+            //If the user press escape close both popup and blur
+            blur.setOnHiding(event1 -> {
                 popup.hide();
             });
             Text title = new Text("Create a new draft");
             title.setFill(Color.WHITE);
+            Text class_width = new Text("Choose the class width : "+classWidth.getValue()+"m");
+            class_width.setFill(Color.WHITE);
+            Text class_height = new Text("Choose the class height : "+classHeigth.getValue()+"m");
+            class_height.setFill(Color.WHITE);
+            Text class_orientation = new Text("Choose the class board placement :");
+            class_orientation.setFill(Color.WHITE);
+            classWidth.valueProperty().addListener((observable, oldValue, newValue) -> {
+                class_width.setText("Choose the class width : "+newValue.intValue()+"m");
+            });
+            classHeigth.valueProperty().addListener((observable, oldValue, newValue) -> {
+                class_height.setText("Choose the class height : "+newValue.intValue()+"m");
+            });
             topBar.getChildren().addAll(closeButton,title);
             vBox.getChildren().addAll(topBar,content);
-            content.getChildren().addAll(textArea,confirmButton);
+            content.getChildren().addAll(textArea,class_width,classWidth,class_height,classHeigth,class_orientation,classOrientation,confirmButton);
             popup.getContent().addAll(vBox);
+            popup.setX(screenBounds.getWidth()/2-popup.getWidth()/2);
+            popup.setY(screenBounds.getHeight()/2-100);
+            blur.show(this.mainStage);
             popup.show(this.mainStage);
         });
 

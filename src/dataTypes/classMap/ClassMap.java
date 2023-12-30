@@ -18,8 +18,6 @@ public class ClassMap {
         this.aClass=aClass;
         this.status = "undefined";
         this.drafts = new ArrayList<>();
-        this.drafts.add(new ClassMapLayer("horizontal"));
-        this.drafts.add(new ClassMapLayer("vertical"));
     }
 
     public Subject getSubject() {

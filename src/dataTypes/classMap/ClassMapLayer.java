@@ -1,5 +1,6 @@
 package dataTypes.classMap;
 
+import dataTypes.classMap.object.BoardOrientation;
 import dataTypes.classMap.object.Desk;
 import dataTypes.classMap.object.DeskOrientation;
 import dataTypes.classMap.object.Room;
@@ -10,18 +11,18 @@ public class ClassMapLayer {
     private String name;
     private ArrayList<Desk> desks;
     private Room room;
-    public ClassMapLayer(String name){
+    public ClassMapLayer(String name, double width, double height, BoardOrientation boardOrientation){
         this.name = name;
         this.desks = new ArrayList<>();
-        this.room = new Room();
-        this.desks.add(new Desk(0,2,"duo",DeskOrientation.horizontal));
+        this.room = new Room(width,height,boardOrientation);
+        /*this.desks.add(new Desk(0,2,"duo",DeskOrientation.horizontal));
         this.desks.add(new Desk(0,4,"duo",DeskOrientation.horizontal));
         this.desks.add(new Desk(0,6,"duo",DeskOrientation.horizontal));
         this.desks.add(new Desk(0,8,"duo",DeskOrientation.horizontal));
         this.desks.add(new Desk(4,2,"duo",DeskOrientation.horizontal));
         this.desks.add(new Desk(4,4,"duo",DeskOrientation.horizontal));
         this.desks.add(new Desk(4,6,"duo",DeskOrientation.horizontal));
-        this.desks.add(new Desk(4,8,"duo",DeskOrientation.horizontal));
+        this.desks.add(new Desk(4,8,"duo",DeskOrientation.horizontal));*/
     }
     public String getName(){
         return this.name;
