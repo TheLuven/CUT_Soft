@@ -1,6 +1,7 @@
-package dataTypes.classMap;
+package dataTypes.classMap.object;
 
 import dataTypes.actors.Student;
+import dataTypes.classMap.Subject;
 
 import java.util.ArrayList;
 

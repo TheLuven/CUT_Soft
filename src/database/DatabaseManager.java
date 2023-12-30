@@ -3,7 +3,7 @@ package database;
 import dataTypes.classMap.ClassMap;
 import dataTypes.classMap.Subject;
 import dataTypes.actors.*;
-import dataTypes.classMap.Class;
+import dataTypes.classMap.object.Class;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

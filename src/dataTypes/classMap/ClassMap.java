@@ -1,6 +1,7 @@
 package dataTypes.classMap;
 
 import dataTypes.actors.Teacher;
+import dataTypes.classMap.object.Class;
 
 import java.util.ArrayList;
 
@@ -17,9 +18,8 @@ public class ClassMap {
         this.aClass=aClass;
         this.status = "undefined";
         this.drafts = new ArrayList<>();
-        this.drafts.add(new ClassMapLayer("test"));
-        this.drafts.add(new ClassMapLayer("test2"));
-        this.drafts.add(new ClassMapLayer("test3"));
+        this.drafts.add(new ClassMapLayer("horizontal"));
+        this.drafts.add(new ClassMapLayer("vertical"));
     }
 
     public Subject getSubject() {
