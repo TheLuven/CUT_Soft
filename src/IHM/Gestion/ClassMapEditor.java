@@ -34,6 +34,7 @@ public class ClassMapEditor {
     private double lastY = 0;
     private ListView<Student> listView;
     private ListView<Desk> deskView;
+    private ListView<ClassMapLayer> predifinedClassMap;
     private Gestion gestion;
     private Button saveButton;
     private Button cancelButton;
@@ -288,18 +289,22 @@ public class ClassMapEditor {
     public void diplayTabPane(){
         HBox container = this.window.getMiddlePanel();
         TabPane tabPane = new TabPane();
-        Tab Student = new Tab("Student");
-        tabPane.getTabs().add(Student);
-        Tab Desk = new Tab("Desk");
-        tabPane.getTabs().add(Desk);
+        Tab studentPane = new Tab("Student");
+        tabPane.getTabs().add(studentPane);
+        Tab deskPane = new Tab("Desk");
+        tabPane.getTabs().add(deskPane);
+        Tab templatePane = new Tab("Template");
+        tabPane.getTabs().add(templatePane);
         //Add the list view in the tab
         this.listView=new ListView<>();
         this.splitView.getItems().addAll(tabPane,this.mapEditor);
         listView.getItems().addAll(this.studentList);
         this.deskView=new ListView<>();
         this.deskView.getItems().addAll(dataTypes.classMap.object.Desk.getDeskTypeList());
-        Desk.setContent(deskView);
-        Student.setContent(listView);
+        this.predifinedClassMap=new ListView<>();
+        deskPane.setContent(deskView);
+        studentPane.setContent(listView);
+        templatePane.setContent(predifinedClassMap);
         container.getChildren().add(splitView);
         tabPane.setMaxWidth(this.screenBounds.getWidth()/5);
         //Cant close the tab
