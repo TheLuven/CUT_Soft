@@ -4,8 +4,8 @@ import dataTypes.actors.Student;
 import dataTypes.classMap.ClassMap;
 import dataTypes.classMap.ClassMapLayer;
 import dataTypes.classMap.object.Desk;
-import dataTypes.classMap.object.boardOrientation;
-import javafx.event.EventHandler;
+import dataTypes.classMap.object.BoardOrientation;
+import dataTypes.classMap.object.DeskOrientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 import IHM.Window.Window;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class ClassMapEditor {
     private ClassMapLayer classMapLayer;
@@ -164,25 +163,25 @@ public class ClassMapEditor {
     public void displayBoard(){
         Pane board = new BorderPane();
         board.setStyle("-fx-background-color: #000000;-fx-border-color: #ffffff;");
-        if(this.classMapLayer.getRoom().getBoardOrientation()== boardOrientation.north){
+        if(this.classMapLayer.getRoom().getBoardOrientation()== BoardOrientation.north){
             board.setPrefHeight(15);
             board.setPrefWidth(this.room.getPrefWidth()/2);
             board.setLayoutX(this.room.getPrefWidth()/4);
             board.setLayoutY(0);
         }
-        else if(this.classMapLayer.getRoom().getBoardOrientation()== boardOrientation.south){
+        else if(this.classMapLayer.getRoom().getBoardOrientation()== BoardOrientation.south){
             board.setPrefHeight(15);
             board.setPrefWidth(this.room.getPrefWidth()/2);
             board.setLayoutX(this.room.getPrefWidth()/4);
             board.setLayoutY(this.room.getPrefHeight()-15);
         }
-        else if(this.classMapLayer.getRoom().getBoardOrientation()== boardOrientation.east){
+        else if(this.classMapLayer.getRoom().getBoardOrientation()== BoardOrientation.east){
             board.setPrefHeight(this.room.getPrefHeight()/2);
             board.setPrefWidth(15);
             board.setLayoutX(this.room.getPrefWidth()-15);
             board.setLayoutY(this.room.getPrefHeight()/4);
         }
-        else if(this.classMapLayer.getRoom().getBoardOrientation()== boardOrientation.west){
+        else if(this.classMapLayer.getRoom().getBoardOrientation()== BoardOrientation.west){
             board.setPrefHeight(this.room.getPrefHeight()/2);
             board.setPrefWidth(15);
             board.setLayoutX(0);
@@ -209,7 +208,7 @@ public class ClassMapEditor {
                 this.room.getChildren().add(deskBox);
             }
             else if(desk.getType().equals("duo")){
-                if(desk.getRoom().getBoardOrientation() == dataTypes.classMap.object.boardOrientation.north || desk.getRoom().getBoardOrientation() == dataTypes.classMap.object.boardOrientation.south){
+                if(desk.getOrientation() == DeskOrientation.horizontal){
                     Pane deskBox1 = new Pane();
                     deskBox1.setPrefWidth(desk.getWidth()*roomWidthRatio/2);
                     deskBox1.setPrefHeight(desk.getHeight()*roomHeightRatio);
@@ -221,6 +220,22 @@ public class ClassMapEditor {
                     deskBox2.setPrefHeight(desk.getHeight()*roomHeightRatio);
                     deskBox2.setLayoutX(desk.getX()*roomWidthRatio+desk.getWidth()*roomWidthRatio/2);
                     deskBox2.setLayoutY(desk.getY()*roomHeightRatio);
+                    deskBox2.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
+                    addDropEvent(deskBox1,desk);
+                    addDropEvent(deskBox2,desk);
+                    this.room.getChildren().addAll(deskBox1,deskBox2);
+                }else{
+                    Pane deskBox1 = new Pane();
+                    deskBox1.setPrefWidth(desk.getWidth()*roomWidthRatio);
+                    deskBox1.setPrefHeight(desk.getHeight()*roomHeightRatio/2);
+                    deskBox1.setLayoutX(desk.getX()*roomWidthRatio);
+                    deskBox1.setLayoutY(desk.getY()*roomHeightRatio);
+                    deskBox1.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
+                    Pane deskBox2 = new Pane();
+                    deskBox2.setPrefWidth(desk.getWidth()*roomWidthRatio);
+                    deskBox2.setPrefHeight(desk.getHeight()*roomHeightRatio/2);
+                    deskBox2.setLayoutX(desk.getX()*roomWidthRatio);
+                    deskBox2.setLayoutY(desk.getY()*roomHeightRatio+desk.getHeight()*roomHeightRatio/2);
                     deskBox2.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
                     addDropEvent(deskBox1,desk);
                     addDropEvent(deskBox2,desk);

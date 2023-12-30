@@ -3,13 +3,13 @@ package dataTypes.classMap.object;
 public class Room {
     private double width;
     private double height;
-    private dataTypes.classMap.object.boardOrientation boardOrientation;
+    private BoardOrientation boardOrientation;
     public Room(){
         this.width = 6;
         this.height = 10;
-        this.boardOrientation = dataTypes.classMap.object.boardOrientation.north;
+        this.boardOrientation = BoardOrientation.north;
     }
-    public Room(double width, double height, dataTypes.classMap.object.boardOrientation boardOrientation){
+    public Room(double width, double height, BoardOrientation boardOrientation){
         this.width = width;
         this.height = height;
         this.boardOrientation = boardOrientation;
@@ -20,7 +20,7 @@ public class Room {
     public double getHeight(){
         return this.height;
     }
-    public boardOrientation getBoardOrientation(){
+    public BoardOrientation getBoardOrientation(){
         return this.boardOrientation;
     }
 }

@@ -28,9 +28,9 @@ public class Main extends Application {
         DatabaseConnection database = new DatabaseConnection("jdbc:mysql://localhost:3306/base","root","");
         DatabaseManager databaseManager = new DatabaseManager(database);
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        //Gestion gestion = new Gestion(databaseManager.getAllTeacherClassMapByTeacher(databaseManager.getTeacherByID(10)),screenBounds,primaryStage);
-        ClassMapEditor classMapEditor = new ClassMapEditor(databaseManager.getAllTeacherClassMapByTeacher(databaseManager.getTeacherByID(10)).get(0),databaseManager.getAllTeacherClassMapByTeacher(databaseManager.getTeacherByID(10)).get(0).getDrafts().get(1),screenBounds,primaryStage);
-        primaryStage.setScene(classMapEditor.getScene());
+        Gestion gestion = new Gestion(databaseManager.getAllTeacherClassMapByTeacher(databaseManager.getTeacherByID(10)),screenBounds,primaryStage);
+        //ClassMapEditor classMapEditor = new ClassMapEditor(databaseManager.getAllTeacherClassMapByTeacher(databaseManager.getTeacherByID(10)).get(0),databaseManager.getAllTeacherClassMapByTeacher(databaseManager.getTeacherByID(10)).get(0).getDrafts().get(1),screenBounds,primaryStage);
+        primaryStage.setScene(gestion.getScene());
         primaryStage.setWidth(screenBounds.getWidth());
         primaryStage.setHeight(screenBounds.getHeight());
         primaryStage.setMinHeight(720);

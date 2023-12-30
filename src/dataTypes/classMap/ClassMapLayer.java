@@ -1,8 +1,8 @@
 package dataTypes.classMap;
 
 import dataTypes.classMap.object.Desk;
+import dataTypes.classMap.object.DeskOrientation;
 import dataTypes.classMap.object.Room;
-import dataTypes.classMap.object.boardOrientation;
 
 import java.util.ArrayList;
 
@@ -14,14 +14,14 @@ public class ClassMapLayer {
         this.name = name;
         this.desks = new ArrayList<>();
         this.room = new Room();
-        this.desks.add(new Desk(0,2,"duo",this.room));
-        this.desks.add(new Desk(0,4,"duo",this.room));
-        this.desks.add(new Desk(0,6,"duo",this.room));
-        this.desks.add(new Desk(0,8,"duo",this.room));
-        this.desks.add(new Desk(4,2,"duo",this.room));
-        this.desks.add(new Desk(4,4,"duo",this.room));
-        this.desks.add(new Desk(4,6,"duo",this.room));
-        this.desks.add(new Desk(4,8,"duo",this.room));
+        this.desks.add(new Desk(0,2,"duo",DeskOrientation.horizontal));
+        this.desks.add(new Desk(0,4,"duo",DeskOrientation.horizontal));
+        this.desks.add(new Desk(0,6,"duo",DeskOrientation.horizontal));
+        this.desks.add(new Desk(0,8,"duo",DeskOrientation.horizontal));
+        this.desks.add(new Desk(4,2,"duo",DeskOrientation.horizontal));
+        this.desks.add(new Desk(4,4,"duo",DeskOrientation.horizontal));
+        this.desks.add(new Desk(4,6,"duo",DeskOrientation.horizontal));
+        this.desks.add(new Desk(4,8,"duo",DeskOrientation.horizontal));
     }
     public String getName(){
         return this.name;
