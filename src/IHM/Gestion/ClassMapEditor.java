@@ -36,7 +36,12 @@ public class ClassMapEditor {
     private double lastX = 0;
     private double lastY = 0;
     private ListView<Student> listView;
-    public ClassMapEditor(ClassMap ClassMap,ClassMapLayer classMapLayer, Rectangle2D screenBounds, Stage stage){
+    private Gestion gestion;
+    private Button saveButton;
+    private Button cancelButton;
+    private Button backButton;
+    public ClassMapEditor(ClassMap ClassMap,ClassMapLayer classMapLayer, Rectangle2D screenBounds, Stage stage,Gestion gestion){
+        this.gestion = gestion;
         this.classMapLayer = classMapLayer;
         this.screenBounds = screenBounds;
         this.splitView = new SplitPane();
@@ -49,11 +54,21 @@ public class ClassMapEditor {
         display();
         window.setTitle("Class Map Editor - "+classMap.getaClass().getClassName()+" - "+classMap.getSubject().getSubjectName()+" - "+classMap.getTeacher().getSurname()+" "+classMap.getTeacher().getName());
     }
+    public void displayBotButtons(){
+        this.saveButton = new Button("Save");
+        this.cancelButton = new Button("Cancel");
+        this.backButton = new Button("Back");
+        this.backButton.setOnAction(event -> {
+            this.stage.setScene(this.gestion.getScene());
+        });
+        this.window.getBotPanel().getChildren().addAll(this.saveButton,this.cancelButton,this.backButton);
+    }
     public void display(){
         diplayStudentList();
         displayRoom();
         displayDesk();
         displayBoard();
+        displayBotButtons();
     }
     public void displayRoom(){
         this.mapEditor.setPrefWidth(this.screenBounds.getWidth());
@@ -180,8 +195,6 @@ public class ClassMapEditor {
         double roomHeight = this.room.getPrefHeight();
         double roomWidthRatio = roomWidth/this.classMapLayer.getRoom().getWidth();
         double roomHeightRatio = roomHeight/this.classMapLayer.getRoom().getHeight();
-        System.out.println(roomWidthRatio);
-        System.out.println(roomHeightRatio);
         //Draw the desks inside the mapEditor
         ArrayList<Desk> desks = this.classMapLayer.getDesks();
         for(Desk desk : desks){
@@ -218,16 +231,22 @@ public class ClassMapEditor {
     }
     public void addDropEvent(Pane deskBox,Desk desk){
         //autorize drag and drop from different elements
-        /*deskBox.setOnDragEntered(event -> {
-            System.out.println("Entered detected on : " + deskBox.getLayoutX());
-            System.out.println("Entered detected on : " + deskBox.getLayoutY());
+        Text tempStudentName = new Text();
+        deskBox.setOnDragEntered(event -> {
+            Student student = listView.getSelectionModel().getSelectedItem();
+            if (student != null) {
+                tempStudentName.setText(student.getName());
+                tempStudentName.setLayoutX(deskBox.getPrefWidth()/2-tempStudentName.getLayoutBounds().getWidth()/2);
+                tempStudentName.setLayoutY(deskBox.getPrefHeight()/2-tempStudentName.getLayoutBounds().getHeight()/2);
+                tempStudentName.setStyle("-fx-fill: rgba(255,255,255,0.46);");
+                deskBox.getChildren().add(tempStudentName);
+            }
             event.consume();
         });
         deskBox.setOnDragExited(event -> {
-            System.out.println("Exited detected on : " + deskBox.getLayoutX());
-            System.out.println("Exited detected on : " + deskBox.getLayoutY());
+            deskBox.getChildren().remove(tempStudentName);
             event.consume();
-        });*/
+        });
         deskBox.setOnDragOver(event -> {
             event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             event.consume();

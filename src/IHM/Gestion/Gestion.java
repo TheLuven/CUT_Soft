@@ -41,6 +41,7 @@ public class Gestion {
         this.grid.setPadding(new Insets(25,25,25,25));
         this.scrollPane.setContent(this.grid);
         this.template.getMiddlePanel().getChildren().add(this.scrollPane);
+        this.template.setTitle("Gestion");
     }
 
     public void createClassGrid(Stage stage){
@@ -49,7 +50,7 @@ public class Gestion {
         //System.out.println(classMaps.size());
         while(index < this.classMaps.size()){
             for(int i = 0;i<3 && index<this.classMaps.size();i++){
-                ClassMapCard c = new ClassMapCard(this.classMaps.get(index),stage);
+                ClassMapCard c = new ClassMapCard(this.classMaps.get(index),stage,this);
                 c.getCard().setMinHeight(this.height/2);
                 c.getCard().setPrefWidth(this.width/3);
                 this.grid.add(c.getCard(),i,line);

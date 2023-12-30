@@ -3,6 +3,7 @@ package IHM.Gestion;
 import dataTypes.classMap.ClassMap;
 import dataTypes.classMap.ClassMapLayer;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -13,17 +14,20 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
 public class ClassMapCard {
-    public ClassMap classMap;
-    public VBox card;
-    public ArrayList<ClassMapLayer> drafts;
-    public ClassMapLayer currentClassMap;
-    public Stage mainStage;
-    public ClassMapCard(ClassMap classMap, Stage stage){
+    private ClassMap classMap;
+    private VBox card;
+    private ArrayList<ClassMapLayer> drafts;
+    private ClassMapLayer currentClassMap;
+    private Stage mainStage;
+    private Gestion gestion;
+    public ClassMapCard(ClassMap classMap, Stage stage,Gestion gestion){
+        this.gestion = gestion;
         this.classMap = classMap;
         this.card = new VBox();
         this.drafts = classMap.drafts;
@@ -87,9 +91,10 @@ public class ClassMapCard {
             textArea.setPrefWidth(200);
             confirmButton.disableProperty().set(true);
             confirmButton.setOnAction(event1 -> {
-                if(!textArea.getText().equals("Draft name")){
-                    this.drafts.add(new ClassMapLayer(textArea.getText()));
-                    comboBox.getItems().add(textArea.getText());
+                if(!textArea.getText().equals("Draft name") || !textArea.getText().equals("")){
+                    ClassMapLayer draft = new ClassMapLayer(textArea.getText());
+                    ClassMapEditor classMapEditor = new ClassMapEditor(this.classMap,draft, Screen.getPrimary().getVisualBounds(),this.mainStage,this.gestion);
+                    this.mainStage.setScene(classMapEditor.getScene());
                     popup.hide();
                 }
             });
