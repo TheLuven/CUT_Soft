@@ -6,6 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+
 public class Window {
     private Scene scene;
     public boolean isConnected = false;
@@ -111,16 +115,8 @@ public class Window {
         botPanel.getChildren().clear();
         screen.getChildren().clear();
         mainWindow.getChildren().clear();
-        if(isConnected){
-            topPanel.getChildren().addAll(logo,topPanelBlank,profileButton, disconnectButton);
-            screen.getChildren().addAll(topPanel,middlePanel,botPanel);
-        }else{
-            Button login = new Button("Login");
-            login.setOnAction(event -> loggingTest());
-            middlePanel.getChildren().add(login);
-            topPanel.getChildren().addAll(logo, topPanelBlank);
-            screen.getChildren().addAll(topPanel,middlePanel);
-        }
+        topPanel.getChildren().addAll(logo,topPanelBlank,profileButton, disconnectButton);
+        screen.getChildren().addAll(topPanel,middlePanel,botPanel);
         HBox.setHgrow(disconnectButton, Priority.NEVER);
         HBox.setHgrow(topPanelBlank, Priority.ALWAYS);
         VBox.setVgrow(topPanel,Priority.NEVER);
@@ -141,7 +137,19 @@ public class Window {
     public Scene getScene() {
         return scene;
     }
-
+    public void setTitle(String title){
+        HBox container = new HBox();
+        container.setAlignment(Pos.CENTER_LEFT);
+        this.topPanel.getChildren().clear();
+        Text titleText = new Text(title);
+        titleText.setFill(javafx.scene.paint.Color.WHITE);
+        titleText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        titleText.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        Region region = new Region();
+        HBox.setHgrow(region, Priority.ALWAYS);
+        container.getChildren().add(titleText);
+        this.topPanel.getChildren().addAll(logo,topPanelBlank,container,region,profileButton, disconnectButton);
+    }
     public VBox getScreen(){ return  screen; }
 
     public HBox getTopPanel(){ return topPanel; }

@@ -1,8 +1,9 @@
 package database;
 
-import dataTypes.ClassMap;
+import dataTypes.classMap.ClassMap;
+import dataTypes.classMap.Subject;
 import dataTypes.actors.*;
-import dataTypes.actors.Class;
+import dataTypes.classMap.object.Class;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,6 +42,7 @@ public class DatabaseManager {
             // Execute the update query
             int rowsAffected = preparedStatement.executeUpdate();
             // Check the number of rows affected
+            connection.close();
             System.out.println("[DEBUG] "+rowsAffected + " row(s) updated successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,6 +69,7 @@ public class DatabaseManager {
             // Execute the get query
             ResultSet resultSet = preparedStatement.executeQuery();
             // Check the number of rows affected
+            connection.close();
             return resultSet.getString(value);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -95,6 +98,7 @@ public class DatabaseManager {
                 String description = resultSet.getString("description");
                 String role = resultSet.getString("role");
                 String className = resultSet.getString("className");
+                connection.close();
                 return new Student(this, id, name, surname, email, description, className, gender);
             }
             return null;
@@ -124,6 +128,7 @@ public class DatabaseManager {
                 String gender = resultSet.getString("gender");
                 String description = resultSet.getString("description");
                 String role = resultSet.getString("role");
+                connection.close();
                 return new Teacher(this, id, name, surname, email, description, gender);
             }
             return null;
@@ -149,6 +154,7 @@ public class DatabaseManager {
             resultSet.next();
             String subject = resultSet.getString("subject");
             int teacher = resultSet.getInt("teacher");
+            connection.close();
             return new Subject(subject,getTeacherByID(teacher));
         } catch (Exception e) {
             e.printStackTrace();
@@ -164,6 +170,7 @@ public class DatabaseManager {
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             String subject = resultSet.getString("subject");
+            connection.close();
             return new Subject(subject,teacher);
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,6 +195,7 @@ public class DatabaseManager {
             while (resultSet.next()){
                 students.add(getStudentByID(resultSet.getInt("person")));
             }
+            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -212,6 +220,7 @@ public class DatabaseManager {
             while (resultSet.next()){
                 subjects.add(getSubjectByID(resultSet.getInt("subject")));
             }
+            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -229,6 +238,7 @@ public class DatabaseManager {
             while (resultSet.next()){
                 subjects.add(getSubjectByID(resultSet.getInt("subject"),teacher));
             }
+            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -253,6 +263,7 @@ public class DatabaseManager {
             String className = resultSet.getString("className");
             ArrayList<Student> students = getClassStudentsByID(id);
             ArrayList<Subject> subjects = getClassSubjectsByID(id);
+            connection.close();
             return new Class(students,className,subjects);
         } catch (Exception e) {
             e.printStackTrace();
@@ -270,6 +281,7 @@ public class DatabaseManager {
             String className = resultSet.getString("className");
             ArrayList<Student> students = getClassStudentsByID(id);
             ArrayList<Subject> subjects = getClassSubjectsByID(id,teacher);
+            connection.close();
             return new Class(students,className,subjects);
         } catch (Exception e) {
             e.printStackTrace();
@@ -292,6 +304,7 @@ public class DatabaseManager {
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             int classID = resultSet.getInt("class");
+            connection.close();
             return getClassByID(classID);
         } catch (Exception e) {
             e.printStackTrace();
