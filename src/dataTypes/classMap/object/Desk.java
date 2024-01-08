@@ -42,13 +42,13 @@ public class Desk {
         }
         else{
             if (this.type.equals("mono")) return this.height;
-            else return this.height*2;
+            else return this.height;
         }
     }
     public double getHeight(){
         if (orientation == DeskOrientation.horizontal ){
             if (this.type.equals("mono")) return this.height;
-            else return this.height*2;
+            else return this.height;
         }
         else{
             if (this.type.equals("mono")) return this.width;

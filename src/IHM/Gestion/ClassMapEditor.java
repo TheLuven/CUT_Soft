@@ -3,6 +3,7 @@ package IHM.Gestion;
 import dataTypes.actors.Student;
 import dataTypes.classMap.ClassMap;
 import dataTypes.classMap.ClassMapLayer;
+import dataTypes.classMap.object.ClassTemplate;
 import dataTypes.classMap.object.Desk;
 import dataTypes.classMap.object.BoardOrientation;
 import dataTypes.classMap.object.DeskOrientation;
@@ -303,6 +304,8 @@ public class ClassMapEditor {
         this.deskView=new ListView<>();
         this.deskView.getItems().addAll(dataTypes.classMap.object.Desk.getDeskTypeList());
         this.predifinedClassMap=new ListView<>();
+        ClassTemplate classTemplate = new ClassTemplate();
+        this.predifinedClassMap.getItems().addAll(classTemplate.getClassMapLayers());
         deskPane.setContent(deskView);
         studentPane.setContent(listView);
         templatePane.setContent(predifinedClassMap);
@@ -335,6 +338,20 @@ public class ClassMapEditor {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     System.out.println("Double click on : " + desk);
                 }
+            }
+        });
+        predifinedClassMap.setOnMouseClicked(event -> {
+            ClassMapLayer template = predifinedClassMap.getSelectionModel().getSelectedItem();
+            if (template != null) {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    System.out.println("Double click on : " + template);
+                }
+                this.classMapLayer = template;
+                this.room.getChildren().clear();
+                this.mapEditor.getChildren().remove(this.room);
+                displayRoom();
+                displayDesk();
+                displayBoard();
             }
         });
         deskView.setOnDragDetected(event -> {
