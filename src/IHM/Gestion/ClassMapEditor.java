@@ -68,6 +68,7 @@ public class ClassMapEditor {
         displayDesk();
         displayBoard();
         displayBotButtons();
+        setDragDeskEvent();
     }
     public void displayRoom(){
         this.mapEditor.setPrefWidth(this.screenBounds.getWidth());
@@ -263,7 +264,7 @@ public class ClassMapEditor {
             event.consume();
         });
         deskBox.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            event.acceptTransferModes(TransferMode.COPY);
             event.consume();
         });
         deskBox.setOnDragDropped(event -> {
@@ -321,16 +322,97 @@ public class ClassMapEditor {
         listView.setOnDragDetected(event -> {
             Student student = listView.getSelectionModel().getSelectedItem();
             if (student != null) {
-                Dragboard db = listView.startDragAndDrop(TransferMode.ANY);
+                Dragboard db = listView.startDragAndDrop(TransferMode.COPY);
                 ClipboardContent content = new ClipboardContent();
                 content.putString("");
                 db.setContent(content);
             }
             event.consume();
         });
+        deskView.setOnMouseClicked(event -> {
+            Desk desk = deskView.getSelectionModel().getSelectedItem();
+            if (desk != null) {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    System.out.println("Double click on : " + desk);
+                }
+            }
+        });
+        deskView.setOnDragDetected(event -> {
+            Desk desk = deskView.getSelectionModel().getSelectedItem();
+            if (desk != null) {
+                Dragboard db = deskView.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.putString("desk");
+                db.setContent(content);
+            }
+            event.consume();
+        });
 
     }
-
+    private void setDragDeskEvent(){
+        this.room.setOnDragOver(event -> {
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            event.consume();
+        });
+        this.room.setOnDragDropped(dragEvent -> {
+            Desk desk = deskView.getSelectionModel().getSelectedItem();
+            if (desk != null) {
+                if (dragEvent.getDragboard().getString().equals("desk")) {
+                    double roomWidth = this.room.getPrefWidth();
+                    double roomHeight = this.room.getPrefHeight();
+                    double roomWidthRatio = roomWidth / this.classMapLayer.getRoom().getWidth();
+                    double roomHeightRatio = roomHeight / this.classMapLayer.getRoom().getHeight();
+                    double x = dragEvent.getX();
+                    double y = dragEvent.getY();
+                    if(desk.getType().equals("mono")){
+                        Pane deskBox = new Pane();
+                        deskBox.setPrefWidth(desk.getWidth()*roomWidthRatio);
+                        deskBox.setPrefHeight(desk.getHeight()*roomHeightRatio);
+                        deskBox.setLayoutX(x);
+                        deskBox.setLayoutY(y);
+                        deskBox.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
+                        addDropEvent(deskBox,desk);
+                        this.room.getChildren().add(deskBox);
+                    }
+                    else if(desk.getType().equals("duo")){
+                        if(desk.getOrientation() == DeskOrientation.horizontal){
+                            Pane deskBox1 = new Pane();
+                            deskBox1.setPrefWidth(desk.getWidth()*roomWidthRatio/2);
+                            deskBox1.setPrefHeight(desk.getHeight()*roomHeightRatio);
+                            deskBox1.setLayoutX(x);
+                            deskBox1.setLayoutY(y);
+                            deskBox1.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
+                            Pane deskBox2 = new Pane();
+                            deskBox2.setPrefWidth(desk.getWidth()*roomWidthRatio/2);
+                            deskBox2.setPrefHeight(desk.getHeight()*roomHeightRatio);
+                            deskBox2.setLayoutX(x+desk.getWidth()*roomWidthRatio/2);
+                            deskBox2.setLayoutY(y);
+                            deskBox2.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
+                            addDropEvent(deskBox1,desk);
+                            addDropEvent(deskBox2,desk);
+                            this.room.getChildren().addAll(deskBox1,deskBox2);
+                        }else{
+                            Pane deskBox1 = new Pane();
+                            deskBox1.setPrefWidth(desk.getWidth()*roomWidthRatio);
+                            deskBox1.setPrefHeight(desk.getHeight()*roomHeightRatio/2);
+                            deskBox1.setLayoutX(x);
+                            deskBox1.setLayoutY(y);
+                            deskBox1.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
+                            Pane deskBox2 = new Pane();
+                            deskBox2.setPrefWidth(desk.getWidth()*roomWidthRatio);
+                            deskBox2.setPrefHeight(desk.getHeight()*roomHeightRatio/2);
+                            deskBox2.setLayoutX(x);
+                            deskBox2.setLayoutY(y+desk.getHeight()*roomHeightRatio/2);
+                            deskBox2.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
+                            addDropEvent(deskBox1,desk);
+                            addDropEvent(deskBox2,desk);
+                            this.room.getChildren().addAll(deskBox1,deskBox2);
+                        }
+                    }
+                }
+            }
+        });
+    }
     public Scene getScene(){
         return this.window.getScene();
     }
