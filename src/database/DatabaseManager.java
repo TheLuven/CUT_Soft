@@ -4,6 +4,7 @@ import dataTypes.classMap.ClassMap;
 import dataTypes.classMap.Subject;
 import dataTypes.actors.*;
 import dataTypes.classMap.object.Class;
+import javafx.scene.text.Text;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -330,5 +331,53 @@ public class DatabaseManager {
             e.printStackTrace();
             return null;
         }
+    }
+    /**
+     * @brief This function allows you to retrieve the id of a student.
+     * @author Yohan Jaffré
+     * @param usernameEntered
+     * @return the id of the student
+     */
+    public int getIdByUsername(String usernameEntered) {
+        int userId = -1;
+        try {
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT p.id FROM person as p WHERE p.identifiant= '"+usernameEntered+"' AND p.role='teacher' ";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                userId = Integer.parseInt(resultSet.getString("id"));
+                connection.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return userId;
+    }
+
+    /**
+     * @brief This function allows you to verify the password of a student.
+     * @author Yohan Jaffré
+     * @param id, passwordEntered
+     * @return true if the password is correct, false if not
+     */
+    public boolean CheckPassword(int id, String passwordEntered) {
+        boolean check = false;
+        try {
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT p.password FROM person as p WHERE p.id="+id;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                String password = resultSet.getString("password");
+                connection.close();
+                check = password.equals(passwordEntered);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check;
     }
 }
