@@ -2,6 +2,7 @@ package IHM.Gestion;
 
 import IHM.Window.Window;
 import dataTypes.classMap.ClassMap;
+import database.DatabaseManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -20,11 +21,13 @@ public class Gestion {
     public Rectangle2D screenBounds;
     public double width;
     public double height;
-    public Gestion(ArrayList<ClassMap> classMaps, Rectangle2D screenBounds, Stage stage){
+    public Stage stage;
+    public Gestion(ArrayList<ClassMap> classMaps, Rectangle2D screenBounds, Stage stage, DatabaseManager dbManager){
+        this.stage = stage;
         this.screenBounds = screenBounds;
         this.width = screenBounds.getWidth();
         this.height = screenBounds.getHeight();
-        this.template = new Window();
+        this.template = new Window(stage,true,classMaps.get(0).getTeacher().getId(),dbManager);
         this.grid = new GridPane();
         this.grid.setHgap(50);
         this.grid.setVgap(50);

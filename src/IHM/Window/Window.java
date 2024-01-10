@@ -1,6 +1,9 @@
 package IHM.Window;
+import IHM.Login.Login;
+import database.DatabaseManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.*;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -9,11 +12,17 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 
 public class Window {
     private Scene scene;
     public boolean isConnected = false;
     private StackPane mainWindow;
+    private Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+    private Stage primaryStage;
+    private DatabaseManager dbManager;
+    private int id;
     private ImageView logo;
     private Button disconnectButton;
     private Button profileButton;
@@ -28,7 +37,17 @@ public class Window {
         scene = new Scene(mainWindow);
     }
 
+    public Window(Stage primaryStage,boolean isConnected, int id, DatabaseManager databaseManager) {
+        this();
+        this.isConnected = isConnected;
+        this.primaryStage = primaryStage;
+        this.dbManager = databaseManager;
+        this.id = id;
+    }
+
     public void init(){
+        primaryStage = primaryStage;                   // Récupération de la fenêtre
+
         mainWindow = new StackPane();
         mainWindow.setStyle("-fx-background-color: #2b2d30;"); //Change backgound color
 
@@ -41,7 +60,7 @@ public class Window {
         disconnectButton = new Button("Disc");
         disconnectButton.setPrefHeight(60);
         disconnectButton.setPrefWidth(60);
-        disconnectButton.setOnAction(event -> disconnectTest());
+        disconnectButton.setOnAction(event -> disconnect());
 
         //Create the profile Button
         profileButton = new Button("Prof");
@@ -115,7 +134,11 @@ public class Window {
         botPanel.getChildren().clear();
         screen.getChildren().clear();
         mainWindow.getChildren().clear();
-        topPanel.getChildren().addAll(logo,topPanelBlank,profileButton, disconnectButton);
+        if(isConnected){
+            topPanel.getChildren().addAll(logo,topPanelBlank,profileButton, disconnectButton);
+        }else{
+            topPanel.getChildren().addAll(logo,topPanelBlank);
+        }
         screen.getChildren().addAll(topPanel,middlePanel,botPanel);
         HBox.setHgrow(disconnectButton, Priority.NEVER);
         HBox.setHgrow(topPanelBlank, Priority.ALWAYS);
@@ -124,15 +147,10 @@ public class Window {
         VBox.setVgrow(botPanel,Priority.NEVER);
         mainWindow.getChildren().addAll(screen);
     }
-    public void loggingTest(){//TODO Delete
-        System.out.println("Logged");
-        isConnected=true;
-        refreshWindow();
-    }
-    public void disconnectTest(){//TODO Delete
-        System.out.println("Disconnected");
+    public void disconnect(){
         isConnected=false;
-        refreshWindow();
+        Login login = new Login(dbManager,primaryStage);
+        primaryStage.setScene(login.getScene());
     }
     public Scene getScene() {
         return scene;
@@ -148,7 +166,12 @@ public class Window {
         Region region = new Region();
         HBox.setHgrow(region, Priority.ALWAYS);
         container.getChildren().add(titleText);
-        this.topPanel.getChildren().addAll(logo,topPanelBlank,container,region,profileButton, disconnectButton);
+        if(isConnected){
+            this.topPanel.getChildren().addAll(logo,topPanelBlank,container,region,profileButton, disconnectButton);
+        }
+        else{
+            this.topPanel.getChildren().addAll(logo,topPanelBlank,container,region);
+        }
     }
     public VBox getScreen(){ return  screen; }
 
@@ -157,4 +180,8 @@ public class Window {
     public HBox getBotPanel(){ return botPanel; }
 
     public HBox getMiddlePanel(){ return middlePanel; }
+
+    public Button getDisconnectButton(){ return disconnectButton; }
+
+    public Button getProfileButton(){ return profileButton; }
 }
