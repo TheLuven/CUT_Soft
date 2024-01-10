@@ -36,6 +36,28 @@ public class ClassMapLayer {
         return this.room;
     }
 
+    public void parseDesks(){
+        //This function parse everyDesk in the classmap layer to divide every duo desk into 2 mono desk
+        ArrayList<Desk> newDesks = new ArrayList<>();
+        for(Desk desk: desks){
+            if (desk.getType().equals("duo")){
+                if (desk.getOrientation() == DeskOrientation.vertical){
+                    Desk desk1 = new Desk(desk.getX(),desk.getY(),"mono",desk.getOrientation());
+                    Desk desk2 = new Desk(desk.getX(),desk.getY()+desk.getHeight()/2,"mono",desk.getOrientation());
+                    newDesks.add(desk1);
+                    newDesks.add(desk2);
+                }else{
+                    Desk desk1 = new Desk(desk.getX(),desk.getY(),"mono",desk.getOrientation());
+                    Desk desk2 = new Desk(desk.getX()+desk.getWidth()/2,desk.getY(),"mono",desk.getOrientation());
+                    newDesks.add(desk1);
+                    newDesks.add(desk2);
+                }
+            }else{
+                newDesks.add(desk);
+            }
+        }
+        this.desks = newDesks;
+    }
     @Override
     public String toString() {
         return "ClassMapLayer{" +
