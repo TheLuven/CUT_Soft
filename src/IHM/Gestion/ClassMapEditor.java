@@ -3,9 +3,7 @@ package IHM.Gestion;
 import dataTypes.actors.Student;
 import dataTypes.classMap.ClassMap;
 import dataTypes.classMap.ClassMapLayer;
-import dataTypes.classMap.object.Desk;
-import dataTypes.classMap.object.BoardOrientation;
-import dataTypes.classMap.object.DeskOrientation;
+import dataTypes.classMap.object.*;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -46,6 +44,7 @@ public class ClassMapEditor {
         this.splitView = new SplitPane();
         this.stage = stage;
         this.window = new Window();
+        //window.getScene().getStylesheets().add("style.css");
         this.classMap = ClassMap;
         this.studentList = classMap.getaClass().getStudents();
         this.mapEditor = new Pane();
@@ -63,7 +62,7 @@ public class ClassMapEditor {
         this.window.getBotPanel().getChildren().addAll(this.saveButton,this.cancelButton,this.backButton);
     }
     public void display(){
-        diplayTabPane();
+        displayTabPane();
         displayRoom();
         displayDesk();
         displayBoard();
@@ -111,51 +110,63 @@ public class ClassMapEditor {
             this.room.setScaleY(this.room.getScaleY() * zoomFactor);
         });
 
-        //move the map with the mouse
         this.room.setOnMousePressed(event -> {
-            room.setCursor(javafx.scene.Cursor.CLOSED_HAND);
-            room.setMouseTransparent(true);
+            //Disable the mouvement of the room if the mouse is on a desk
+            if (event.getTarget().equals(this.room)){
+                room.setCursor(javafx.scene.Cursor.CLOSED_HAND);
+                room.setMouseTransparent(true);
+            }
         });
         this.room.setOnMouseReleased(event -> {
-            room.setCursor(javafx.scene.Cursor.DEFAULT);
-            room.setMouseTransparent(false);
-            lastX = 0;
-            lastY = 0;
+            if (event.getTarget().equals(this.room)) {
+                room.setCursor(javafx.scene.Cursor.DEFAULT);
+                room.setMouseTransparent(false);
+                lastX = 0;
+                lastY = 0;
+            }
         });
         this.room.setOnMouseDragged(event -> {
-            if (lastX == 0 && lastY == 0) {
-                lastX = event.getSceneX();
-                lastY = event.getSceneY();
-            }else{
-                double deltaX = event.getSceneX() - lastX;
-                double deltaY = event.getSceneY() - lastY;
-                this.room.setLayoutX(this.room.getLayoutX() + deltaX);
-                this.room.setLayoutY(this.room.getLayoutY() + deltaY);
-                lastX = event.getSceneX();
-                lastY = event.getSceneY();
+            if (event.getTarget().equals(this.room)){
+                if (lastX == 0 && lastY == 0) {
+                    lastX = event.getSceneX();
+                    lastY = event.getSceneY();
+                }else{
+                    double deltaX = event.getSceneX() - lastX;
+                    double deltaY = event.getSceneY() - lastY;
+                    this.room.setLayoutX(this.room.getLayoutX() + deltaX);
+                    this.room.setLayoutY(this.room.getLayoutY() + deltaY);
+                    lastX = event.getSceneX();
+                    lastY = event.getSceneY();
+                }
             }
         });
         this.mapEditor.setOnMousePressed(event -> {
-            room.setCursor(javafx.scene.Cursor.CLOSED_HAND);
-            room.setMouseTransparent(true);
+            if (event.getTarget().equals(this.mapEditor)) {
+                room.setCursor(javafx.scene.Cursor.CLOSED_HAND);
+                room.setMouseTransparent(true);
+            }
         });
         this.mapEditor.setOnMouseReleased(event -> {
-            room.setCursor(javafx.scene.Cursor.DEFAULT);
-            room.setMouseTransparent(false);
-            lastX = 0;
-            lastY = 0;
+            if (event.getTarget().equals(this.mapEditor)) {
+                room.setCursor(javafx.scene.Cursor.DEFAULT);
+                room.setMouseTransparent(false);
+                lastX = 0;
+                lastY = 0;
+            }
         });
         this.mapEditor.setOnMouseDragged(event -> {
-            if (lastX == 0 && lastY == 0) {
-                lastX = event.getSceneX();
-                lastY = event.getSceneY();
-            }else{
-                double deltaX = event.getSceneX() - lastX;
-                double deltaY = event.getSceneY() - lastY;
-                this.room.setLayoutX(this.room.getLayoutX() + deltaX);
-                this.room.setLayoutY(this.room.getLayoutY() + deltaY);
-                lastX = event.getSceneX();
-                lastY = event.getSceneY();
+            if (event.getTarget().equals(this.mapEditor)) {
+                if (lastX == 0 && lastY == 0) {
+                    lastX = event.getSceneX();
+                    lastY = event.getSceneY();
+                } else {
+                    double deltaX = event.getSceneX() - lastX;
+                    double deltaY = event.getSceneY() - lastY;
+                    this.room.setLayoutX(this.room.getLayoutX() + deltaX);
+                    this.room.setLayoutY(this.room.getLayoutY() + deltaY);
+                    lastX = event.getSceneX();
+                    lastY = event.getSceneY();
+                }
             }
         });
         this.mapEditor.getChildren().add(this.room);
@@ -199,58 +210,26 @@ public class ClassMapEditor {
         ArrayList<Desk> desks = this.classMapLayer.getDesks();
         for(Desk desk : desks){
             if(desk.getType().equals("mono")){
-                Pane deskBox = new Pane();
-                deskBox.setPrefWidth(desk.getWidth()*roomWidthRatio);
-                deskBox.setPrefHeight(desk.getHeight()*roomHeightRatio);
-                deskBox.setLayoutX(desk.getX()*roomWidthRatio);
-                deskBox.setLayoutY(desk.getY()*roomHeightRatio);
-                deskBox.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                addDropEvent(deskBox,desk);
-                this.room.getChildren().add(deskBox);
-            }
-            else if(desk.getType().equals("duo")){
-                if(desk.getOrientation() == DeskOrientation.horizontal){
-                    Pane deskBox1 = new Pane();
-                    deskBox1.setPrefWidth(desk.getWidth()*roomWidthRatio/2);
-                    deskBox1.setPrefHeight(desk.getHeight()*roomHeightRatio);
-                    deskBox1.setLayoutX(desk.getX()*roomWidthRatio);
-                    deskBox1.setLayoutY(desk.getY()*roomHeightRatio);
-                    deskBox1.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                    Pane deskBox2 = new Pane();
-                    deskBox2.setPrefWidth(desk.getWidth()*roomWidthRatio/2);
-                    deskBox2.setPrefHeight(desk.getHeight()*roomHeightRatio);
-                    deskBox2.setLayoutX(desk.getX()*roomWidthRatio+desk.getWidth()*roomWidthRatio/2);
-                    deskBox2.setLayoutY(desk.getY()*roomHeightRatio);
-                    deskBox2.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                    addDropEvent(deskBox1,desk);
-                    addDropEvent(deskBox2,desk);
-                    this.room.getChildren().addAll(deskBox1,deskBox2);
-                }else{
-                    Pane deskBox1 = new Pane();
-                    deskBox1.setPrefWidth(desk.getWidth()*roomWidthRatio);
-                    deskBox1.setPrefHeight(desk.getHeight()*roomHeightRatio/2);
-                    deskBox1.setLayoutX(desk.getX()*roomWidthRatio);
-                    deskBox1.setLayoutY(desk.getY()*roomHeightRatio);
-                    deskBox1.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                    Pane deskBox2 = new Pane();
-                    deskBox2.setPrefWidth(desk.getWidth()*roomWidthRatio);
-                    deskBox2.setPrefHeight(desk.getHeight()*roomHeightRatio/2);
-                    deskBox2.setLayoutX(desk.getX()*roomWidthRatio);
-                    deskBox2.setLayoutY(desk.getY()*roomHeightRatio+desk.getHeight()*roomHeightRatio/2);
-                    deskBox2.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                    addDropEvent(deskBox1,desk);
-                    addDropEvent(deskBox2,desk);
-                    this.room.getChildren().addAll(deskBox1,deskBox2);
-                }
+                drawMonoDesk(desk,roomWidthRatio,roomHeightRatio,0,0);
             }
         }
     }
     public void addDropEvent(Pane deskBox,Desk desk){
-        //autorize drag and drop from different elements
+        //Allow drag and drop from different elements
         Text tempStudentName = new Text();
         deskBox.setOnDragEntered(event -> {
-            Student student = listView.getSelectionModel().getSelectedItem();
-            if (student != null) {
+            Student student = null;
+            if(event.getGestureSource() == listView){
+                student = listView.getSelectionModel().getSelectedItem();
+            }else if (event.getGestureSource() != deskView){
+                //get the student from the dragboard
+                Dragboard db = event.getDragboard();
+                String studentIndex = db.getString();
+                student = studentList.get(Integer.parseInt(studentIndex));
+            }else{
+                return;
+            }
+            if (student != null && desk.getStudent() == null) {
                 tempStudentName.setText(student.getName());
                 tempStudentName.setLayoutX(deskBox.getPrefWidth()/2-tempStudentName.getLayoutBounds().getWidth()/2);
                 tempStudentName.setLayoutY(deskBox.getPrefHeight()/2-tempStudentName.getLayoutBounds().getHeight()/2);
@@ -264,30 +243,80 @@ public class ClassMapEditor {
             event.consume();
         });
         deskBox.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.COPY);
-            event.consume();
+            if (event.getGestureSource()!=deskView){
+                event.acceptTransferModes(TransferMode.COPY);
+                event.consume();
+            }
         });
+
         deskBox.setOnDragDropped(event -> {
-            Student student = listView.getSelectionModel().getSelectedItem();
-            //delete the student from the list
-            listView.getItems().remove(student);
-            //add the student to the desk
-            Text studentName = new Text(student.getName());
-            Text studentSurname = new Text(student.getSurname());
-            //center student name and change the color to white
-            studentSurname.setLayoutX(deskBox.getPrefWidth()/2-studentSurname.getLayoutBounds().getWidth()/2);
-            studentSurname.setLayoutY(deskBox.getPrefHeight()/2-studentSurname.getLayoutBounds().getHeight()/2+studentName.getLayoutBounds().getHeight());
-            studentSurname.setStyle("-fx-fill: #ffffff;");
-            studentName.setLayoutX(deskBox.getPrefWidth()/2-studentName.getLayoutBounds().getWidth()/2);
-            studentName.setLayoutY(deskBox.getPrefHeight()/2-studentName.getLayoutBounds().getHeight()/2);
-            studentName.setStyle("-fx-fill: #ffffff;");
-            deskBox.getChildren().addAll(studentName,studentSurname);
-            desk.setStudent(student);
-            event.setDropCompleted(true);
+            if (event.getGestureSource()==deskView){return;}
+            if (desk.getStudent() == null && event.getGestureSource()==listView) {
+                Student student = listView.getSelectionModel().getSelectedItem();
+                //delete the student from the list
+                listView.getItems().remove(student);
+                //add the student to the desk
+                Text studentName = new Text(student.getName());
+                Text studentSurname = new Text(student.getSurname());
+                //center student name and change the color to white
+                studentSurname.setLayoutX(deskBox.getPrefWidth()/2-studentSurname.getLayoutBounds().getWidth()/2);
+                studentSurname.setLayoutY(deskBox.getPrefHeight()/2-studentSurname.getLayoutBounds().getHeight()/2+studentName.getLayoutBounds().getHeight());
+                studentSurname.setStyle("-fx-fill: #ffffff;");
+                studentName.setLayoutX(deskBox.getPrefWidth()/2-studentName.getLayoutBounds().getWidth()/2);
+                studentName.setLayoutY(deskBox.getPrefHeight()/2-studentName.getLayoutBounds().getHeight()/2);
+                studentName.setStyle("-fx-fill: #ffffff;");
+                deskBox.getChildren().addAll(studentName,studentSurname);
+                desk.setStudent(student);
+                //event.setDropCompleted(true);
+            }
+            else if (desk.getStudent() == null){
+                Dragboard db = event.getDragboard();
+                String studentIndex = db.getString();
+                Student student = studentList.get(Integer.parseInt(studentIndex));
+                Text studentName = new Text(student.getName());
+                Text studentSurname = new Text(student.getSurname());
+                //center student name and change the color to white
+                studentSurname.setLayoutX(deskBox.getPrefWidth()/2-studentSurname.getLayoutBounds().getWidth()/2);
+                studentSurname.setLayoutY(deskBox.getPrefHeight()/2-studentSurname.getLayoutBounds().getHeight()/2+studentName.getLayoutBounds().getHeight());
+                studentSurname.setStyle("-fx-fill: #ffffff;");
+                studentName.setLayoutX(deskBox.getPrefWidth()/2-studentName.getLayoutBounds().getWidth()/2);
+                studentName.setLayoutY(deskBox.getPrefHeight()/2-studentName.getLayoutBounds().getHeight()/2);
+                studentName.setStyle("-fx-fill: #ffffff;");
+                deskBox.getChildren().addAll(studentName,studentSurname);
+                desk.setStudent(student);
+
+            }
             event.consume();
         });
     }
-    public void diplayTabPane(){
+
+    public void addDragEvent(Desk desk,Pane deskBox){
+        deskBox.setOnDragDetected(event -> {
+            if (desk.getStudent() != null) {
+                Dragboard db = deskBox.startDragAndDrop(TransferMode.COPY);
+                ClipboardContent content = new ClipboardContent();
+                Student student = desk.getStudent();
+                int studentIndex = studentList.indexOf(student);
+                content.putString(String.valueOf(studentIndex));
+                db.setContent(content);
+            }
+            event.consume();
+        });
+
+        deskBox.setOnDragDone(event -> {
+            if (event.getGestureSource()==deskBox && listView.getItems().contains(desk.getStudent())) {
+                deskBox.getChildren().clear();
+                desk.setStudent(null);
+            }
+            if (event.getGestureSource()==deskBox && !event.getGestureTarget().equals(this.room) && !event.getGestureTarget().equals(this.mapEditor)) {
+                deskBox.getChildren().clear();
+                desk.setStudent(null);
+            }
+            event.consume();
+        });
+    }
+
+    public void displayTabPane(){
         HBox container = this.window.getMiddlePanel();
         TabPane tabPane = new TabPane();
         Tab studentPane = new Tab("Student");
@@ -303,6 +332,8 @@ public class ClassMapEditor {
         this.deskView=new ListView<>();
         this.deskView.getItems().addAll(dataTypes.classMap.object.Desk.getDeskTypeList());
         this.predifinedClassMap=new ListView<>();
+        ClassTemplate classTemplate = new ClassTemplate();
+        this.predifinedClassMap.getItems().addAll(classTemplate.getClassMapLayers());
         deskPane.setContent(deskView);
         studentPane.setContent(listView);
         templatePane.setContent(predifinedClassMap);
@@ -329,6 +360,24 @@ public class ClassMapEditor {
             }
             event.consume();
         });
+        //Add drop of a student from a deskbox to put the student back on the list
+        listView.setOnDragOver(event -> {
+            if (event.getGestureSource()!=listView){
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            }
+            event.consume();
+        });
+        listView.setOnDragDropped(dragEvent -> {
+            if(dragEvent.getGestureSource()!=listView){
+                //get the student from the dragboard
+                Dragboard db = dragEvent.getDragboard();
+                String studentIndex = db.getString();
+                Student student = studentList.get(Integer.parseInt(studentIndex));
+                listView.getItems().add(student);
+                dragEvent.setDropCompleted(true);
+            };
+            dragEvent.consume();
+        });
         deskView.setOnMouseClicked(event -> {
             Desk desk = deskView.getSelectionModel().getSelectedItem();
             if (desk != null) {
@@ -337,22 +386,38 @@ public class ClassMapEditor {
                 }
             }
         });
+        predifinedClassMap.setOnMouseClicked(event -> {
+            ClassMapLayer template = predifinedClassMap.getSelectionModel().getSelectedItem();
+            if (template != null) {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    System.out.println("Double click on : " + template);
+                }
+                this.classMapLayer = template;
+                this.room.getChildren().clear();
+                this.mapEditor.getChildren().remove(this.room);
+                this.classMapLayer.parseDesks();
+                displayRoom();
+                displayDesk();
+                displayBoard();
+            }
+        });
         deskView.setOnDragDetected(event -> {
             Desk desk = deskView.getSelectionModel().getSelectedItem();
             if (desk != null) {
-                Dragboard db = deskView.startDragAndDrop(TransferMode.MOVE);
+                Dragboard db = deskView.startDragAndDrop(TransferMode.COPY);
                 ClipboardContent content = new ClipboardContent();
                 content.putString("desk");
                 db.setContent(content);
             }
             event.consume();
         });
-
     }
     private void setDragDeskEvent(){
         this.room.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-            event.consume();
+            if (event.getGestureSource()==deskView) {
+                event.acceptTransferModes(TransferMode.COPY);
+                event.consume();
+            }
         });
         this.room.setOnDragDropped(dragEvent -> {
             Desk desk = deskView.getSelectionModel().getSelectedItem();
@@ -365,49 +430,20 @@ public class ClassMapEditor {
                     double x = dragEvent.getX();
                     double y = dragEvent.getY();
                     if(desk.getType().equals("mono")){
-                        Pane deskBox = new Pane();
-                        deskBox.setPrefWidth(desk.getWidth()*roomWidthRatio);
-                        deskBox.setPrefHeight(desk.getHeight()*roomHeightRatio);
-                        deskBox.setLayoutX(x);
-                        deskBox.setLayoutY(y);
-                        deskBox.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                        addDropEvent(deskBox,desk);
-                        this.room.getChildren().add(deskBox);
+                        drawMonoDesk(desk,roomWidthRatio,roomHeightRatio,x,y);
                     }
                     else if(desk.getType().equals("duo")){
-                        if(desk.getOrientation() == DeskOrientation.horizontal){
-                            Pane deskBox1 = new Pane();
-                            deskBox1.setPrefWidth(desk.getWidth()*roomWidthRatio/2);
-                            deskBox1.setPrefHeight(desk.getHeight()*roomHeightRatio);
-                            deskBox1.setLayoutX(x);
-                            deskBox1.setLayoutY(y);
-                            deskBox1.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                            Pane deskBox2 = new Pane();
-                            deskBox2.setPrefWidth(desk.getWidth()*roomWidthRatio/2);
-                            deskBox2.setPrefHeight(desk.getHeight()*roomHeightRatio);
-                            deskBox2.setLayoutX(x+desk.getWidth()*roomWidthRatio/2);
-                            deskBox2.setLayoutY(y);
-                            deskBox2.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                            addDropEvent(deskBox1,desk);
-                            addDropEvent(deskBox2,desk);
-                            this.room.getChildren().addAll(deskBox1,deskBox2);
+                        Desk desk1;
+                        Desk desk2;
+                        if (desk.getOrientation() == DeskOrientation.vertical){
+                            desk1 = new Desk(desk.getX(),desk.getY(),"mono",desk.getOrientation());
+                            desk2 = new Desk(desk.getX(),desk.getY()+desk.getHeight()/2,"mono",desk.getOrientation());
                         }else{
-                            Pane deskBox1 = new Pane();
-                            deskBox1.setPrefWidth(desk.getWidth()*roomWidthRatio);
-                            deskBox1.setPrefHeight(desk.getHeight()*roomHeightRatio/2);
-                            deskBox1.setLayoutX(x);
-                            deskBox1.setLayoutY(y);
-                            deskBox1.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                            Pane deskBox2 = new Pane();
-                            deskBox2.setPrefWidth(desk.getWidth()*roomWidthRatio);
-                            deskBox2.setPrefHeight(desk.getHeight()*roomHeightRatio/2);
-                            deskBox2.setLayoutX(x);
-                            deskBox2.setLayoutY(y+desk.getHeight()*roomHeightRatio/2);
-                            deskBox2.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
-                            addDropEvent(deskBox1,desk);
-                            addDropEvent(deskBox2,desk);
-                            this.room.getChildren().addAll(deskBox1,deskBox2);
+                            desk1 = new Desk(desk.getX(),desk.getY(),"mono",desk.getOrientation());
+                            desk2 = new Desk(desk.getX()+desk.getWidth()/2,desk.getY(),"mono",desk.getOrientation());
                         }
+                        drawMonoDesk(desk1,roomWidthRatio,roomHeightRatio,x,y);
+                        drawMonoDesk(desk2,roomWidthRatio,roomHeightRatio,x,y);
                     }
                 }
             }
@@ -415,5 +451,17 @@ public class ClassMapEditor {
     }
     public Scene getScene(){
         return this.window.getScene();
+    }
+
+    public void drawMonoDesk(Desk desk,double roomWidthRatio,double roomHeightRatio,double x,double y){
+        Pane deskBox = new Pane();
+        deskBox.setPrefWidth(desk.getWidth()*roomWidthRatio);
+        deskBox.setPrefHeight(desk.getHeight()*roomHeightRatio);
+        deskBox.setLayoutX(desk.getX()*roomWidthRatio+x);
+        deskBox.setLayoutY(desk.getY()*roomWidthRatio+y);
+        deskBox.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
+        addDropEvent(deskBox,desk);
+        addDragEvent(desk,deskBox);
+        this.room.getChildren().add(deskBox);
     }
 }

@@ -26,7 +26,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        DatabaseConnection database = new DatabaseConnection("jdbc:mysql://localhost:3306/base","root","");
+        DatabaseConnection database = new DatabaseConnection("jdbc:mysql://localhost:8889/base","root","root");
         DatabaseManager databaseManager = new DatabaseManager(database);
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         //ClassMapEditor classMapEditor = new ClassMapEditor(databaseManager.getAllTeacherClassMapByTeacher(databaseManager.getTeacherByID(10)).get(0),databaseManager.getAllTeacherClassMapByTeacher(databaseManager.getTeacherByID(10)).get(0).getDrafts().get(1),screenBounds,primaryStage);
