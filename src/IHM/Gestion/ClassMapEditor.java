@@ -14,7 +14,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import IHM.Window.Window;
+import org.json.simple.JSONObject;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ClassMapEditor {
@@ -37,15 +40,17 @@ public class ClassMapEditor {
     private Button saveButton;
     private Button cancelButton;
     private Button backButton;
-    public ClassMapEditor(ClassMap ClassMap,ClassMapLayer classMapLayer, Rectangle2D screenBounds, Stage stage,Gestion gestion){
+    private String draftName;
+    public ClassMapEditor(ClassMap classMap,ClassMapLayer classMapLayer, Rectangle2D screenBounds, Stage stage,Gestion gestion){
         this.gestion = gestion;
         this.classMapLayer = classMapLayer;
         this.screenBounds = screenBounds;
         this.splitView = new SplitPane();
+        this.draftName = classMapLayer.getName();
         this.stage = stage;
         this.window = new Window();
         //window.getScene().getStylesheets().add("style.css");
-        this.classMap = ClassMap;
+        this.classMap = classMap;
         this.studentList = classMap.getaClass().getStudents();
         this.mapEditor = new Pane();
         this.room = new Pane();
@@ -59,7 +64,53 @@ public class ClassMapEditor {
         this.backButton.setOnAction(event -> {
             this.stage.setScene(this.gestion.getScene());
         });
+        this.addSaveButtonAction();
         this.window.getBotPanel().getChildren().addAll(this.saveButton,this.cancelButton,this.backButton);
+    }
+    public void addSaveButtonAction(){
+        this.saveButton.setOnAction(event -> {
+            JSONObject draft = new JSONObject();
+            double roomWidth = this.classMapLayer.getRoom().getWidth();
+            double roomHeight = this.classMapLayer.getRoom().getHeight();
+            BoardOrientation boardOrientation = this.classMapLayer.getRoom().getBoardOrientation();
+            draft.put("name",this.draftName);
+            draft.put("roomWidth",roomWidth);
+            draft.put("roomHeight",roomHeight);
+            draft.put("boardOrientation",boardOrientation.toString());
+            //Get desks
+            ArrayList<JSONObject> desks = new ArrayList<>();
+            for (Desk desk : this.classMapLayer.getDesks()){
+                JSONObject deskJSON = new JSONObject();
+                deskJSON.put("orientation",desk.getOrientation().toString());
+                deskJSON.put("x",desk.getX());
+                deskJSON.put("y",desk.getY());
+                if (desk.getStudent()!=null){
+                    deskJSON.put("student_id",desk.getStudent().getId());
+                }else{
+                    deskJSON.put("student_id",null);
+                }
+                desks.add(deskJSON);
+            }
+            draft.put("desks",desks);
+            //Save the JSON object in a local JSON file
+            try {
+                String classMapName = this.classMap.getaClass().getClassName();
+                String subjectName = this.classMap.getSubject().getSubjectName();
+                //Create the directory if it doesn't exist
+                java.io.File directory = new java.io.File("Drafts/"+classMapName+"/"+subjectName);
+                directory.mkdirs();
+
+                //Create the file
+                FileWriter JSONFile = new FileWriter("Drafts/"+classMapName+"/"+subjectName+"/"+this.draftName+".json");
+                JSONFile.write(draft.toJSONString());
+                System.out.println("Successfully Copied JSON Object to File...");
+                System.out.println("\nJSON Object: " + draft);
+                JSONFile.flush();
+                JSONFile.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
     public void display(){
         displayTabPane();
