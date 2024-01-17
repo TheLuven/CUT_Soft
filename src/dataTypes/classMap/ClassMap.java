@@ -64,14 +64,17 @@ public class ClassMap {
                             else if (orientation.equals("vertical")) deskOrientation = DeskOrientation.vertical;
                             Desk desk1 = new Desk(x,y,"mono",deskOrientation);
                             int id ;
-                            try {
-                                id = (int) deskObject.get("student_id");
-                            }catch (Exception e){
-                                id = -1;
-                            }
-                            if (id != -1){
-                                Student student = this.getStudentByID(id);
-                                desk1.setStudent(student);
+                            if (deskObject.get("student_id") == null);
+                            else{
+                                try {
+                                    id = Math.toIntExact((long) deskObject.get("student_id"));
+                                }catch (Exception e){
+                                    id = -1;
+                                }
+                                if (id != -1){
+                                    Student student = this.getStudentByID(id);
+                                    desk1.setStudent(student);
+                                }
                             }
                             classMapLayer.addDesk(desk1);
                         }
