@@ -11,6 +11,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import IHM.Window.Window;
@@ -38,9 +39,10 @@ public class ClassMapEditor {
     private ListView<ClassMapLayer> predifinedClassMap;
     private Gestion gestion;
     private Button saveButton;
-    private Button cancelButton;
+    private Button sendButton;
     private Button backButton;
     private String draftName;
+    private Button deleteButton;
     public ClassMapEditor(ClassMap classMap,ClassMapLayer classMapLayer, Rectangle2D screenBounds, Stage stage,Gestion gestion){
         this.gestion = gestion;
         this.classMapLayer = classMapLayer;
@@ -54,19 +56,31 @@ public class ClassMapEditor {
         this.studentList = classMap.getaClass().getStudents();
         this.mapEditor = new Pane();
         this.room = new Pane();
+        this.deleteButton = new Button("X");
+        //Reduce font size and change color to white
+        this.deleteButton.setStyle("-fx-font-size: 8px;-fx-text-fill: #ffffff;");
+        this.deleteButton.setStyle("-fx-background-color: #ff0000;");
         display();
         window.setTitle("Class Map Editor - "+classMap.getaClass().getClassName()+" - "+classMap.getSubject().getSubjectName()+" - "+classMap.getTeacher().getSurname()+" "+classMap.getTeacher().getName());
     }
     public void displayBotButtons(){
         this.saveButton = new Button("Save");
-        this.cancelButton = new Button("Cancel");
+        this.sendButton = new Button("Send to the Server");
+        Region region = new Region();
+        HBox.setHgrow(region, javafx.scene.layout.Priority.ALWAYS);
         this.backButton = new Button("Back");
         this.backButton.setOnAction(event -> {
             this.stage.setScene(this.gestion.getScene());
             this.gestion.reload();
         });
         this.addSaveButtonAction();
-        this.window.getBotPanel().getChildren().addAll(this.saveButton,this.cancelButton,this.backButton);
+        this.window.getBotPanel().getChildren().addAll(this.saveButton,this.backButton,region,this.sendButton);
+    }
+    private void addSendButtonAction(){
+        //TODO
+        double roomWidth = this.classMapLayer.getRoom().getWidth();
+        double roomHeight = this.classMapLayer.getRoom().getHeight();
+        BoardOrientation boardOrientation = this.classMapLayer.getRoom().getBoardOrientation();
     }
     public void addSaveButtonAction(){
         this.saveButton.setOnAction(event -> {
@@ -111,6 +125,7 @@ public class ClassMapEditor {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            this.stage.setScene(this.gestion.getScene());
         });
     }
     public void display(){
@@ -523,6 +538,27 @@ public class ClassMapEditor {
         return this.window.getScene();
     }
 
+    private void addMouseOverEvent(Pane deskBox, Desk desk){
+        deskBox.setOnMouseEntered(event -> {
+                deskBox.getChildren().add(this.deleteButton);
+                //Delete button is 1/5 of the width of the deskbox
+                this.deleteButton.setMaxWidth(10);
+                this.deleteButton.setMaxHeight(10);
+                this.deleteButton.setOnAction(event1 -> {
+                    this.classMapLayer.removeDesk(desk);
+                    this.room.getChildren().remove(deskBox);
+                    if (desk.getStudent()!=null){
+                        this.listView.getItems().add(desk.getStudent());
+                    }
+                });
+        });
+        deskBox.setOnMouseExited(event -> {
+            if (deskBox.getChildren().contains(this.deleteButton)){
+                deskBox.getChildren().remove(this.deleteButton);
+            }
+        });
+    }
+
     public void drawMonoDesk(Desk desk,double roomWidthRatio,double roomHeightRatio,double x,double y){
         Pane deskBox = new Pane();
         deskBox.setPrefWidth(desk.getWidth()*roomWidthRatio);
@@ -532,6 +568,7 @@ public class ClassMapEditor {
         deskBox.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
         addDropEvent(deskBox,desk);
         addDragEvent(desk,deskBox);
+        addMouseOverEvent(deskBox,desk);
         if (desk.getStudent()!=null){
             Student student = desk.getStudent();
             //add the student to the desk

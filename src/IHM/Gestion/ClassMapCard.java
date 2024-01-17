@@ -56,6 +56,8 @@ public class ClassMapCard {
         for(ClassMapLayer s : drafts){
             comboBox.getItems().add(s.getName());
         }
+        //Select the first item by default
+        comboBox.getSelectionModel().selectFirst();
         Button editDraft = new Button("Edit Draft");
         Button createNewDraft = new Button("Create a new Draft");
         Button checkCurrentMap = new Button("Visualize current Class Map");
