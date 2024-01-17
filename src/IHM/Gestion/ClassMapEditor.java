@@ -63,6 +63,7 @@ public class ClassMapEditor {
         this.backButton = new Button("Back");
         this.backButton.setOnAction(event -> {
             this.stage.setScene(this.gestion.getScene());
+            this.gestion.reload();
         });
         this.addSaveButtonAction();
         this.window.getBotPanel().getChildren().addAll(this.saveButton,this.cancelButton,this.backButton);
@@ -453,6 +454,7 @@ public class ClassMapEditor {
                 displayRoom();
                 displayDesk();
                 displayBoard();
+                refillListView();
             }
         });
         deskView.setOnDragDetected(event -> {
@@ -465,6 +467,10 @@ public class ClassMapEditor {
             }
             event.consume();
         });
+    }
+    private void refillListView(){
+        this.listView.getItems().clear();
+        this.listView.getItems().addAll(this.studentList);
     }
     private void setDragDeskEvent(){
         this.room.setOnDragOver(event -> {
@@ -484,20 +490,30 @@ public class ClassMapEditor {
                     double x = dragEvent.getX();
                     double y = dragEvent.getY();
                     if(desk.getType().equals("mono")){
+                        Desk deskToAdd = new Desk(x/roomWidthRatio,y/roomHeightRatio,"mono",desk.getOrientation());
                         drawMonoDesk(desk,roomWidthRatio,roomHeightRatio,x,y);
+                        this.classMapLayer.addDesk(deskToAdd);
                     }
                     else if(desk.getType().equals("duo")){
                         Desk desk1;
                         Desk desk2;
+                        Desk deskToAdd1;
+                        Desk deskToAdd2;
                         if (desk.getOrientation() == DeskOrientation.vertical){
                             desk1 = new Desk(desk.getX(),desk.getY(),"mono",desk.getOrientation());
                             desk2 = new Desk(desk.getX(),desk.getY()+desk.getHeight()/2,"mono",desk.getOrientation());
+                            deskToAdd1 = new Desk(x/roomWidthRatio,y/roomHeightRatio,"mono",desk1.getOrientation());
+                            deskToAdd2 = new Desk(x/roomWidthRatio,(y)/roomHeightRatio+desk.getHeight()/2,"mono",desk2.getOrientation());
                         }else{
                             desk1 = new Desk(desk.getX(),desk.getY(),"mono",desk.getOrientation());
                             desk2 = new Desk(desk.getX()+desk.getWidth()/2,desk.getY(),"mono",desk.getOrientation());
+                            deskToAdd1 = new Desk(x/roomWidthRatio,y/roomHeightRatio,"mono",desk1.getOrientation());
+                            deskToAdd2 = new Desk((x)/roomWidthRatio+desk.getWidth()/2,y/roomHeightRatio,"mono",desk2.getOrientation());
                         }
                         drawMonoDesk(desk1,roomWidthRatio,roomHeightRatio,x,y);
                         drawMonoDesk(desk2,roomWidthRatio,roomHeightRatio,x,y);
+                        this.classMapLayer.addDesk(deskToAdd1);
+                        this.classMapLayer.addDesk(deskToAdd2);
                     }
                 }
             }

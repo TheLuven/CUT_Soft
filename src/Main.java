@@ -20,7 +20,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        DatabaseConnection database = new DatabaseConnection("jdbc:mysql://localhost:8889/base","root","root");
+        DatabaseConnection database = new DatabaseConnection("jdbc:mysql://localhost:3306/base","root","");
         DatabaseManager databaseManager = new DatabaseManager(database);
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         Login login = new Login(databaseManager,primaryStage);

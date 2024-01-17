@@ -32,6 +32,7 @@ public class ClassMap {
         getAllLocal();
     }
     public void getAllLocal(){
+        this.drafts.clear();
         //Check in the files if there is a directory with the same subject and class
         File folder = new File("Drafts/"+this.aClass.getClassName()+"/"+this.subject.getSubjectName());
         Path path = Path.of(folder.getPath());

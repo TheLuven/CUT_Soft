@@ -46,7 +46,13 @@ public class Gestion {
         this.template.getMiddlePanel().getChildren().add(this.scrollPane);
         this.template.setTitle("Gestion");
     }
-
+    public void reload(){
+        for(ClassMap c : this.classMaps){
+            c.getAllLocal();
+        }
+        this.grid.getChildren().clear();
+        createClassGrid(this.stage);
+    }
     public void createClassGrid(Stage stage){
         int index = 0;
         int line = 0;
