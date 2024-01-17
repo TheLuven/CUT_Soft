@@ -263,6 +263,9 @@ public class ClassMapEditor {
             if(desk.getType().equals("mono")){
                 drawMonoDesk(desk,roomWidthRatio,roomHeightRatio,0,0);
             }
+            if (desk.getStudent()!=null){
+                this.listView.getItems().remove(desk.getStudent());
+            }
         }
     }
     public void addDropEvent(Pane deskBox,Desk desk){
@@ -513,6 +516,20 @@ public class ClassMapEditor {
         deskBox.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
         addDropEvent(deskBox,desk);
         addDragEvent(desk,deskBox);
+        if (desk.getStudent()!=null){
+            Student student = desk.getStudent();
+            //add the student to the desk
+            Text studentName = new Text(student.getName());
+            Text studentSurname = new Text(student.getSurname());
+            //center student name and change the color to white
+            studentSurname.setLayoutX(deskBox.getPrefWidth()/2-studentSurname.getLayoutBounds().getWidth()/2);
+            studentSurname.setLayoutY(deskBox.getPrefHeight()/2-studentSurname.getLayoutBounds().getHeight()/2+studentName.getLayoutBounds().getHeight());
+            studentSurname.setStyle("-fx-fill: #ffffff;");
+            studentName.setLayoutX(deskBox.getPrefWidth()/2-studentName.getLayoutBounds().getWidth()/2);
+            studentName.setLayoutY(deskBox.getPrefHeight()/2-studentName.getLayoutBounds().getHeight()/2);
+            studentName.setStyle("-fx-fill: #ffffff;");
+            deskBox.getChildren().addAll(studentName,studentSurname);
+        }
         this.room.getChildren().add(deskBox);
     }
 }

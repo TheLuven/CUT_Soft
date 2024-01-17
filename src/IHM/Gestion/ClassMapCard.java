@@ -199,7 +199,10 @@ public class ClassMapCard {
 
         //onclick on the editDraft button : open the draft selected in the comboBox
         editDraft.setOnAction(event -> {
-            //TODO : create the popup
+            //get selected draft and open it
+            ClassMapLayer draft = drafts.get(comboBox.getSelectionModel().getSelectedIndex());
+            ClassMapEditor classMapEditor = new ClassMapEditor(this.classMap,draft, Screen.getPrimary().getVisualBounds(),this.mainStage,this.gestion);
+            this.mainStage.setScene(classMapEditor.getScene());
         });
 
         //onclick on the checkCurrentMap button : open a popup where you can see the current class map
