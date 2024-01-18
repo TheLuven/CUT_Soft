@@ -29,6 +29,7 @@ public class Gestion {
         this.width = screenBounds.getWidth();
         this.height = screenBounds.getHeight();
         this.template = new Window(stage,true,classMaps.get(0).getTeacher().getId(),dbManager);
+        this.dbManager = dbManager;
         this.grid = new GridPane();
         this.grid.setHgap(50);
         this.grid.setVgap(50);

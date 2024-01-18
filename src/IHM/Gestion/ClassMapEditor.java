@@ -69,6 +69,7 @@ public class ClassMapEditor {
     public void displayBotButtons(){
         this.saveButton = new Button("Save");
         this.sendButton = new Button("Send to the Server");
+        this.addSendButtonAction();
         Region region = new Region();
         HBox.setHgrow(region, javafx.scene.layout.Priority.ALWAYS);
         this.backButton = new Button("Back");
@@ -83,6 +84,28 @@ public class ClassMapEditor {
         double roomWidth = this.classMapLayer.getRoom().getWidth();
         double roomHeight = this.classMapLayer.getRoom().getHeight();
         BoardOrientation boardOrientation = this.classMapLayer.getRoom().getBoardOrientation();
+        String roomName = this.draftName;
+        int classId = this.classMap.getaClass().getClassId();
+        int subjectId = this.classMap.getSubject().getSubjectId();
+        this.sendButton.setOnAction(actionEvent -> {
+            dbManager.deleteAllCoordinateOfASubject(subjectId);
+            try {
+                dbManager.updateAClassSubject(classId,subjectId,roomWidth,roomHeight,roomName,"online",boardOrientation.toString());
+            }catch (Exception e){
+                dbManager.updateClassStatus(classId,subjectId,"undefined");
+            }
+            try {
+                for (Desk desk : this.classMapLayer.getDesks()){
+                    if (desk.getStudent()!=null){
+                        dbManager.setACoordinate(desk.getX(),desk.getY(),subjectId,desk.getOrientation().toString(),desk.getStudent().getId());
+                    }else{
+                        dbManager.setACoordinate(desk.getX(),desk.getY(),subjectId,desk.getOrientation().toString());
+                    }
+                }
+            }catch (Exception e){
+                dbManager.updateClassStatus(classId, subjectId,"undefined");
+            }
+        });
     }
     public void addSaveButtonAction(){
         this.saveButton.setOnAction(event -> {

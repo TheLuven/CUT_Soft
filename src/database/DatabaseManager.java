@@ -156,7 +156,7 @@ public class DatabaseManager {
             String subject = resultSet.getString("subject");
             int teacher = resultSet.getInt("teacher");
             connection.close();
-            return new Subject(subject,getTeacherByID(teacher));
+            return new Subject(subject,getTeacherByID(teacher),id);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -172,7 +172,7 @@ public class DatabaseManager {
             resultSet.next();
             String subject = resultSet.getString("subject");
             connection.close();
-            return new Subject(subject,teacher);
+            return new Subject(subject,teacher,id);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -265,7 +265,7 @@ public class DatabaseManager {
             ArrayList<Student> students = getClassStudentsByID(id);
             ArrayList<Subject> subjects = getClassSubjectsByID(id);
             connection.close();
-            return new Class(students,className,subjects);
+            return new Class(students,className,subjects,id);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -283,7 +283,7 @@ public class DatabaseManager {
             ArrayList<Student> students = getClassStudentsByID(id);
             ArrayList<Subject> subjects = getClassSubjectsByID(id,teacher);
             connection.close();
-            return new Class(students,className,subjects);
+            return new Class(students,className,subjects,id);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -432,6 +432,21 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+    public void deleteAllCoordinateOfASubject(int subjectID){
+        try {
+            Connection connection = this.database.getConnection();
+            //Delete all row where subject_id = subjectID
+            String deleteQuery = "DELETE FROM coordinate WHERE subject = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
+            preparedStatement.setInt(1, subjectID);
+            // Execute the delete query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public void setACoordinate(double x, double y,int subjectID,String desk_orientation,int studentID) {
         try {
             Connection connection = this.database.getConnection();
@@ -469,6 +484,24 @@ public class DatabaseManager {
             preparedStatement.setString(5, board_orientation);
             preparedStatement.setInt(6, class_id);
             preparedStatement.setInt(7, subject_id);
+            System.out.println("[DEBUG] Update Query : "+preparedStatement.toString());
+            // Execute the update query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+            System.out.println("[DEBUG] "+rowsAffected + " row(s) updated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void updateClassStatus(int class_id,int subject_id, String status){
+        try {
+            Connection connection = this.database.getConnection();
+            String updateQuery = "UPDATE classsubject SET class_status = ? WHERE class = ? AND subject = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+            preparedStatement.setString(1, status);
+            preparedStatement.setInt(2, class_id);
+            preparedStatement.setInt(3, subject_id);
             System.out.println("[DEBUG] Update Query : "+preparedStatement.toString());
             // Execute the update query
             int rowsAffected = preparedStatement.executeUpdate();
