@@ -20,6 +20,11 @@ public class Desk {
         this.orientation = orientation;
     }
 
+    public Desk(double x, double y, String mono, DeskOrientation deskOrientation, Student studentByID) {
+        this(x,y,mono,deskOrientation);
+        this.student = studentByID;
+    }
+
     public double getX() {
         return x;
     }

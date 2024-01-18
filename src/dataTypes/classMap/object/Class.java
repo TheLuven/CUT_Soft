@@ -65,4 +65,11 @@ public class Class {
         }
         return string;
     }
+
+    public Student getStudentByID(int i){
+        for (Student student : this.students){
+            if (student.getId() == i) return student;
+        }
+        return null;
+    }
 }

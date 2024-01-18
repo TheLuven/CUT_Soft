@@ -52,6 +52,9 @@ public class Gestion {
         for(ClassMap c : this.classMaps){
             c.getAllLocal();
         }
+        for (ClassMapCard c : this.classCardList){
+            c.reloadCurrentClassMap();
+        }
         this.grid.getChildren().clear();
         createClassGrid(this.stage);
     }

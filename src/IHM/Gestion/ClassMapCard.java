@@ -31,11 +31,24 @@ public class ClassMapCard {
         this.classMap = classMap;
         this.card = new VBox();
         this.drafts = classMap.drafts;
-        this.currentClassMap = classMap.currentClassMap;
+        reloadCurrentClassMap();
         this.mainStage=stage;
         cardGenerator();
     }
-
+    public void setCurrentClassMap(){
+        int classId = this.classMap.getaClass().getClassId();
+        int subjectId = this.classMap.getSubject().getSubjectId();
+        if (this.gestion.getDataBaseManager().getClassMapStatus(classId,subjectId).equals("online")) {
+            this.classMap.setStatus("online");
+            this.classMap.setCurrentClassMap(this.gestion.getDataBaseManager().getCurrentClassMap(classId,subjectId));
+        }else{
+            this.classMap.setStatus("undefined");
+        }
+    }
+    public void reloadCurrentClassMap(){
+        setCurrentClassMap();
+        this.currentClassMap = classMap.currentClassMap;
+    }
     public void cardGenerator(){
         //Create text Node
         Text className = new Text("Class Name : "+classMap.getaClass().getClassName());
@@ -206,10 +219,14 @@ public class ClassMapCard {
             ClassMapEditor classMapEditor = new ClassMapEditor(this.classMap,draft, Screen.getPrimary().getVisualBounds(),this.mainStage,this.gestion,this.gestion.getDataBaseManager());
             this.mainStage.setScene(classMapEditor.getScene());
         });
-
+        //If the class map is undefined we cant click on the checkCurrentMap button
+        if (this.classMap.getStatus().equals("undefined")){
+            checkCurrentMap.disableProperty().set(true);
+        }
         //onclick on the checkCurrentMap button : open a popup where you can see the current class map
         checkCurrentMap.setOnAction(event -> {
-            //TODO : create the popup
+            ClassMapVisu classMapVisu = new ClassMapVisu(this.classMap,this.classMap.currentClassMap, Screen.getPrimary().getVisualBounds(),this.mainStage,this.gestion);
+            this.mainStage.setScene(classMapVisu.getScene());
         });
     }
 

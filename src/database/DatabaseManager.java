@@ -1,9 +1,13 @@
 package database;
 
 import dataTypes.classMap.ClassMap;
+import dataTypes.classMap.ClassMapLayer;
 import dataTypes.classMap.Subject;
 import dataTypes.actors.*;
+import dataTypes.classMap.object.BoardOrientation;
 import dataTypes.classMap.object.Class;
+import dataTypes.classMap.object.Desk;
+import dataTypes.classMap.object.DeskOrientation;
 import javafx.scene.text.Text;
 
 import java.sql.Connection;
@@ -11,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DatabaseManager {
     DatabaseConnection database;
@@ -510,6 +515,78 @@ public class DatabaseManager {
             System.out.println("[DEBUG] "+rowsAffected + " row(s) updated successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public ArrayList<Desk> getAllCordinateOfASubject(int subjectID, Class aClass){
+        try {
+            ArrayList<Desk> desks = new ArrayList<>();
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT person,desk_orientation,x,y FROM coordinate WHERE subject="+subjectID;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                int person = resultSet.getInt("person");
+                DeskOrientation deskOrientation;
+                String desk_orientation = resultSet.getString("desk_orientation");
+                if (desk_orientation.equals("horizontal")) deskOrientation = DeskOrientation.horizontal;
+                else deskOrientation = DeskOrientation.vertical;
+                double x = resultSet.getDouble("x");
+                double y = resultSet.getDouble("y");
+                desks.add(new Desk(x,y,"mono",deskOrientation,aClass.getStudentByID(person)));
+            }
+            System.out.println(desks);
+            connection.close();
+            return desks;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public ClassMapLayer getCurrentClassMap(int class_id, int subject){
+        try {
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT width,height,class_status,board_orientation FROM classsubject WHERE class="+class_id+" AND subject="+subject;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            double width = resultSet.getDouble("width");
+            double height = resultSet.getDouble("height");
+            String class_status = resultSet.getString("class_status");
+            String board_orientation = resultSet.getString("board_orientation");
+            connection.close();
+            BoardOrientation bo = BoardOrientation.north;
+            if (board_orientation.equals("north")) bo = BoardOrientation.north;
+            else if (board_orientation.equals("south")) bo = BoardOrientation.south;
+            else if (board_orientation.equals("east")) bo = BoardOrientation.east;
+            else if (board_orientation.equals("west")) bo = BoardOrientation.west;
+            ClassMapLayer classMapLayer = new ClassMapLayer("Current ClassMap",width,height,bo);
+            for(Desk desk : getAllCordinateOfASubject(subject,getClassByID(class_id))){
+                classMapLayer.addDesk(desk);
+            }
+            return classMapLayer;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getClassMapStatus(int class_id,int subject_id){
+        try {
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT class_status FROM classsubject WHERE class="+class_id+" AND subject="+subject_id;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            String status = resultSet.getString("class_status");
+            connection.close();
+            return status;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

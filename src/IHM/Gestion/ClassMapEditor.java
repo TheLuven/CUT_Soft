@@ -78,16 +78,18 @@ public class ClassMapEditor {
             this.gestion.reload();
         });
         this.addSaveButtonAction();
+        //DIsable send to server button
+        this.sendButton.setDisable(true);
         this.window.getBotPanel().getChildren().addAll(this.saveButton,this.backButton,region,this.sendButton);
     }
     private void addSendButtonAction(){
-        double roomWidth = this.classMapLayer.getRoom().getWidth();
-        double roomHeight = this.classMapLayer.getRoom().getHeight();
-        BoardOrientation boardOrientation = this.classMapLayer.getRoom().getBoardOrientation();
-        String roomName = this.draftName;
-        int classId = this.classMap.getaClass().getClassId();
-        int subjectId = this.classMap.getSubject().getSubjectId();
         this.sendButton.setOnAction(actionEvent -> {
+            double roomWidth = this.classMapLayer.getRoom().getWidth();
+            double roomHeight = this.classMapLayer.getRoom().getHeight();
+            BoardOrientation boardOrientation = this.classMapLayer.getRoom().getBoardOrientation();
+            String roomName = this.draftName;
+            int classId = this.classMap.getaClass().getClassId();
+            int subjectId = this.classMap.getSubject().getSubjectId();
             dbManager.deleteAllCoordinateOfASubject(subjectId);
             try {
                 dbManager.updateAClassSubject(classId,subjectId,roomWidth,roomHeight,roomName,"online",boardOrientation.toString());
@@ -105,6 +107,8 @@ public class ClassMapEditor {
             }catch (Exception e){
                 dbManager.updateClassStatus(classId, subjectId,"undefined");
             }
+            this.gestion.reload();
+            this.stage.setScene(this.gestion.getScene());
         });
     }
     public void addSaveButtonAction(){
@@ -150,6 +154,7 @@ public class ClassMapEditor {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            this.gestion.reload();
             this.stage.setScene(this.gestion.getScene());
         });
     }
@@ -381,6 +386,9 @@ public class ClassMapEditor {
                 desk.setStudent(student);
 
             }
+            if(this.listView.getItems().isEmpty()){
+                this.sendButton.setDisable(false);
+            }
             event.consume();
         });
     }
@@ -470,6 +478,7 @@ public class ClassMapEditor {
                 Student student = studentList.get(Integer.parseInt(studentIndex));
                 listView.getItems().add(student);
                 dragEvent.setDropCompleted(true);
+                this.sendButton.setDisable(true);
             };
             dragEvent.consume();
         });
@@ -511,6 +520,7 @@ public class ClassMapEditor {
     private void refillListView(){
         this.listView.getItems().clear();
         this.listView.getItems().addAll(this.studentList);
+        this.sendButton.setDisable(true);
     }
     private void setDragDeskEvent(){
         this.room.setOnDragOver(event -> {
@@ -537,24 +547,31 @@ public class ClassMapEditor {
                     else if(desk.getType().equals("duo")){
                         Desk desk1;
                         Desk desk2;
-                        Desk deskToAdd1;
-                        Desk deskToAdd2;
                         if (desk.getOrientation() == DeskOrientation.vertical){
                             desk1 = new Desk(desk.getX(),desk.getY(),"mono",desk.getOrientation());
                             desk2 = new Desk(desk.getX(),desk.getY()+desk.getHeight()/2,"mono",desk.getOrientation());
-                            deskToAdd1 = new Desk(x/roomWidthRatio,y/roomHeightRatio,"mono",desk1.getOrientation());
-                            deskToAdd2 = new Desk(x/roomWidthRatio,(y)/roomHeightRatio+desk.getHeight()/2,"mono",desk2.getOrientation());
                         }else{
                             desk1 = new Desk(desk.getX(),desk.getY(),"mono",desk.getOrientation());
                             desk2 = new Desk(desk.getX()+desk.getWidth()/2,desk.getY(),"mono",desk.getOrientation());
-                            deskToAdd1 = new Desk(x/roomWidthRatio,y/roomHeightRatio,"mono",desk1.getOrientation());
-                            deskToAdd2 = new Desk((x)/roomWidthRatio+desk.getWidth()/2,y/roomHeightRatio,"mono",desk2.getOrientation());
                         }
                         drawMonoDesk(desk1,roomWidthRatio,roomHeightRatio,x,y);
                         drawMonoDesk(desk2,roomWidthRatio,roomHeightRatio,x,y);
-                        this.classMapLayer.addDesk(deskToAdd1);
-                        this.classMapLayer.addDesk(deskToAdd2);
+                        if (desk.getOrientation() == DeskOrientation.vertical){
+                            desk1.setX(x/roomWidthRatio);
+                            desk1.setY(y/roomHeightRatio);
+                            desk2.setX(x/roomWidthRatio);
+                            desk2.setY((y)/roomHeightRatio+desk.getHeight()/2);
+                        }else{
+                            desk1.setX(x/roomWidthRatio);
+                            desk1.setY(y/roomHeightRatio);
+                            desk2.setX((x)/roomWidthRatio+desk.getWidth()/2);
+                            desk2.setY(y/roomHeightRatio);
+                        }
+                        this.classMapLayer.addDesk(desk1);
+                        this.classMapLayer.addDesk(desk2);
                     }
+                    System.out.println(this.classMapLayer.getDesks());
+                    System.out.println(this.classMapLayer.getDesks().size());
                 }
             }
         });
@@ -574,7 +591,10 @@ public class ClassMapEditor {
                     this.room.getChildren().remove(deskBox);
                     if (desk.getStudent()!=null){
                         this.listView.getItems().add(desk.getStudent());
+                        this.sendButton.setDisable(true);
                     }
+                    System.out.println(this.classMapLayer.getDesks());
+                    System.out.println(this.classMapLayer.getDesks().size());
                 });
         });
         deskBox.setOnMouseExited(event -> {
