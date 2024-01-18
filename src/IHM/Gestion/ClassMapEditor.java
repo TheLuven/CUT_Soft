@@ -4,6 +4,7 @@ import dataTypes.actors.Student;
 import dataTypes.classMap.ClassMap;
 import dataTypes.classMap.ClassMapLayer;
 import dataTypes.classMap.object.*;
+import database.DatabaseManager;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -43,7 +44,8 @@ public class ClassMapEditor {
     private Button backButton;
     private String draftName;
     private Button deleteButton;
-    public ClassMapEditor(ClassMap classMap,ClassMapLayer classMapLayer, Rectangle2D screenBounds, Stage stage,Gestion gestion){
+    private DatabaseManager dbManager;
+    public ClassMapEditor(ClassMap classMap, ClassMapLayer classMapLayer, Rectangle2D screenBounds, Stage stage, Gestion gestion, DatabaseManager dbManager){
         this.gestion = gestion;
         this.classMapLayer = classMapLayer;
         this.screenBounds = screenBounds;
@@ -56,6 +58,7 @@ public class ClassMapEditor {
         this.studentList = classMap.getaClass().getStudents();
         this.mapEditor = new Pane();
         this.room = new Pane();
+        this.dbManager = dbManager;
         this.deleteButton = new Button("X");
         //Reduce font size and change color to white
         this.deleteButton.setStyle("-fx-font-size: 8px;-fx-text-fill: #ffffff;");
@@ -77,7 +80,6 @@ public class ClassMapEditor {
         this.window.getBotPanel().getChildren().addAll(this.saveButton,this.backButton,region,this.sendButton);
     }
     private void addSendButtonAction(){
-        //TODO
         double roomWidth = this.classMapLayer.getRoom().getWidth();
         double roomHeight = this.classMapLayer.getRoom().getHeight();
         BoardOrientation boardOrientation = this.classMapLayer.getRoom().getBoardOrientation();

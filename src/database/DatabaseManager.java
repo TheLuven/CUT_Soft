@@ -380,4 +380,103 @@ public class DatabaseManager {
         }
         return check;
     }
+    /**
+     * @brief
+     * @author Victor VENULETH
+     * @param
+     * @return
+     */
+    public void updateACoordinate(int id,double x, double y,int subjectID,String desk_orientation) {
+        try {
+            Connection connection = this.database.getConnection();
+            String updateQuery = "UPDATE coordinate " +
+                                 "SET x = ?, y = ?, subject = ?, desk_orientation = ? " +
+                                 "WHERE id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+            preparedStatement.setDouble(1, x);
+            preparedStatement.setDouble(2, y);
+            preparedStatement.setInt(3, subjectID);
+            preparedStatement.setString(4, desk_orientation);
+            preparedStatement.setInt(5, id);
+            System.out.println("[DEBUG] Update Query : "+preparedStatement.toString());
+            // Execute the update query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+            System.out.println("[DEBUG] "+rowsAffected + " row(s) updated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * @brief
+     * @author Victor VENULETH
+     * @param
+     * @return
+     */
+    public void setACoordinate(double x, double y,int subjectID,String desk_orientation) {
+        try {
+            Connection connection = this.database.getConnection();
+            String setQuery = "INSERT INTO coordinate (x,y,subject,desk_orientation) VALUES (?,?,?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(setQuery);
+            preparedStatement.setDouble(1, x);
+            preparedStatement.setDouble(2, y);
+            preparedStatement.setInt(3, subjectID);
+            preparedStatement.setString(4, desk_orientation);
+            // Execute the insert query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+            System.out.println("[DEBUG] "+rowsAffected + " row(s) inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void setACoordinate(double x, double y,int subjectID,String desk_orientation,int studentID) {
+        try {
+            Connection connection = this.database.getConnection();
+            String setQuery = "INSERT INTO coordinate (x,y,subject,desk_orientation,person) VALUES (?,?,?,?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(setQuery);
+            preparedStatement.setDouble(1, x);
+            preparedStatement.setDouble(2, y);
+            preparedStatement.setInt(3, subjectID);
+            preparedStatement.setString(4, desk_orientation);
+            preparedStatement.setInt(5, studentID);
+            // Execute the insert query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+            System.out.println("[DEBUG] "+rowsAffected + " row(s) inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * @brief
+     * @author Victor VENULETH
+     * @param
+     * @return
+     */
+    public void updateAClassSubject(int class_id,int subject_id,double width, double height,String room_name,String class_status,String board_orientation) {
+        try {
+            Connection connection = this.database.getConnection();
+            String updateQuery = "UPDATE classsubject SET width = ? ,height = ? ,room_name = ? ,class_status = ? ,board_orientation = ? WHERE class = ? AND subject = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+            preparedStatement.setDouble(1, width);
+            preparedStatement.setDouble(2, height);
+            preparedStatement.setString(3, room_name);
+            preparedStatement.setString(4, class_status);
+            preparedStatement.setString(5, board_orientation);
+            preparedStatement.setInt(6, class_id);
+            preparedStatement.setInt(7, subject_id);
+            System.out.println("[DEBUG] Update Query : "+preparedStatement.toString());
+            // Execute the update query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+            System.out.println("[DEBUG] "+rowsAffected + " row(s) updated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

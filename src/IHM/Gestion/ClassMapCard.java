@@ -129,7 +129,7 @@ public class ClassMapCard {
                         orientation =  BoardOrientation.west;
                     }
                     ClassMapLayer draft = new ClassMapLayer(textArea.getText(),classWidth.getValue(),classHeigth.getValue(),orientation);
-                    ClassMapEditor classMapEditor = new ClassMapEditor(this.classMap,draft, Screen.getPrimary().getVisualBounds(),this.mainStage,this.gestion);
+                    ClassMapEditor classMapEditor = new ClassMapEditor(this.classMap,draft, Screen.getPrimary().getVisualBounds(),this.mainStage,this.gestion,this.gestion.getDataBaseManager());
                     this.mainStage.setScene(classMapEditor.getScene());
                     popup.hide();
                     blur.hide();
@@ -203,7 +203,7 @@ public class ClassMapCard {
         editDraft.setOnAction(event -> {
             //get selected draft and open it
             ClassMapLayer draft = drafts.get(comboBox.getSelectionModel().getSelectedIndex());
-            ClassMapEditor classMapEditor = new ClassMapEditor(this.classMap,draft, Screen.getPrimary().getVisualBounds(),this.mainStage,this.gestion);
+            ClassMapEditor classMapEditor = new ClassMapEditor(this.classMap,draft, Screen.getPrimary().getVisualBounds(),this.mainStage,this.gestion,this.gestion.getDataBaseManager());
             this.mainStage.setScene(classMapEditor.getScene());
         });
 

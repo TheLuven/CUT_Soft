@@ -22,6 +22,7 @@ public class Gestion {
     public double width;
     public double height;
     public Stage stage;
+    private DatabaseManager dbManager;
     public Gestion(ArrayList<ClassMap> classMaps, Rectangle2D screenBounds, Stage stage, DatabaseManager dbManager){
         this.stage = stage;
         this.screenBounds = screenBounds;
@@ -52,6 +53,9 @@ public class Gestion {
         }
         this.grid.getChildren().clear();
         createClassGrid(this.stage);
+    }
+    public DatabaseManager getDataBaseManager(){
+        return this.dbManager;
     }
     public void createClassGrid(Stage stage){
         int index = 0;
