@@ -4,8 +4,8 @@ import database.DatabaseManager;
 
 public class Student extends Actor{
     private String className;
-    public Student(DatabaseManager source, int id, String name, String surname, String email, String description, String className, String gender) {
-        super(source, id, name, surname, email, description, gender);
+    public Student(DatabaseManager source, int id, String name, String surname, String username, String email, String description, String className, String gender) {
+        super(source, id, name, surname, username, email, description, gender);
         this.className=className;
     }
     public String getClassName() {

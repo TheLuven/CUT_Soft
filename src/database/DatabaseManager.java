@@ -92,20 +92,21 @@ public class DatabaseManager {
     public Student getStudentByID(int id) {
         try {
             Connection connection = this.database.getConnection();
-            String selectQuery = "SELECT p.name,p.surname,p.email,p.gender,p.role,p.description,c.className FROM person as p,class as c,classPerson as cp WHERE p.id=" + id+ " AND cp.person = "+id+" AND cp.class = c.id AND p.role='student'";
+            String selectQuery = "SELECT p.name,p.surname,p.identifiant,p.email,p.gender,p.role,p.description,c.className FROM person as p,class as c,classPerson as cp WHERE p.id=" + id+ " AND cp.person = "+id+" AND cp.class = c.id AND p.role='student'";
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
             // Execute the query and get the result
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
                 String name = resultSet.getString("name");
                 String surname = resultSet.getString("surname");
+                String username = resultSet.getString("identifiant");
                 String email = resultSet.getString("email");
                 String gender = resultSet.getString("gender");
                 String description = resultSet.getString("description");
                 String role = resultSet.getString("role");
                 String className = resultSet.getString("className");
                 connection.close();
-                return new Student(this, id, name, surname, email, description, className, gender);
+                return new Student(this, id, name, surname, username, email, description, className, gender);
             }
             return null;
         } catch (Exception e) {
@@ -123,19 +124,20 @@ public class DatabaseManager {
     public Teacher getTeacherByID(int id) {
         try {
             Connection connection = this.database.getConnection();
-            String selectQuery = "SELECT p.name,p.surname,p.email,p.gender,p.role,p.description FROM person as p WHERE p.role='teacher' AND p.id=" + id;
+            String selectQuery = "SELECT p.name,p.surname,p.identifiant,p.email,p.gender,p.role,p.description FROM person as p WHERE p.role='teacher' AND p.id=" + id;
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
             // Execute the query and get the result
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
                 String name = resultSet.getString("name");
                 String surname = resultSet.getString("surname");
+                String username = resultSet.getString("identifiant");
                 String email = resultSet.getString("email");
                 String gender = resultSet.getString("gender");
                 String description = resultSet.getString("description");
                 String role = resultSet.getString("role");
                 connection.close();
-                return new Teacher(this, id, name, surname, email, description, gender);
+                return new Teacher(this, id, name, surname, username, email, description, gender);
             }
             return null;
         } catch (Exception e) {
