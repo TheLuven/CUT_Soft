@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class Teacher extends Actor{
     private ArrayList<ClassMap> classMaps;
-    public Teacher(DatabaseManager source, int id, String name, String surname, String email, String description, String gender) {
-        super(source, id, name, surname, email, description, gender);
+    public Teacher(DatabaseManager source, int id, String name, String surname,String username, String email, String description, String gender) {
+        super(source, id, name, surname, username, email, description, gender);
         this.classMaps = super.source.getAllTeacherClassMapByTeacher(this);
     }
 

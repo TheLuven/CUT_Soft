@@ -1,5 +1,8 @@
 package IHM.Window;
+
+import IHM.Gestion.Gestion;
 import IHM.Login.Login;
+import IHM.Profile.Profile;
 import database.DatabaseManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -48,24 +51,35 @@ public class Window {
     public void init(){
         primaryStage = primaryStage;                   // Récupération de la fenêtre
 
+
         mainWindow = new StackPane();
         mainWindow.setStyle("-fx-background-color: #2b2d30;"); //Change backgound color
 
         //Create the logo
-        logo = new ImageView(new Image("CUT.png")); //TODO : Change the logo
+        logo = new ImageView(new Image("CUT.png"));
         logo.setFitHeight(50); // Set the width as needed //TODO : Make the logo clickable to go back to an other stage
         logo.setPreserveRatio(true);
 
         //Create the disconect Button
-        disconnectButton = new Button("Disc");
-        disconnectButton.setPrefHeight(60);
-        disconnectButton.setPrefWidth(60);
-        disconnectButton.setOnAction(event -> disconnect());
+        disconnectButton = new Button();
+        String imageDisconnectPath = "file:" + System.getProperty("user.dir") + "/dataset/logo/disconnect_icon.jpg";
+        Image disconnectImage = new Image(imageDisconnectPath);
+        ImageView disconnectIcon = new ImageView(disconnectImage);
+        disconnectIcon.setFitHeight(50);
+        disconnectIcon.setPreserveRatio(true);
+        disconnectButton.setGraphic(disconnectIcon);
+        disconnectButton.setOnAction(event -> disconnect(primaryStage));
 
         //Create the profile Button
-        profileButton = new Button("Prof");
+        profileButton = new Button();
         profileButton.setPrefHeight(60);
         profileButton.setPrefWidth(60);
+        String imageProfilePath = "file:" + System.getProperty("user.dir") + "/dataset/logo/profile_icon_default.jpg";
+        ImageView profileIcon = new ImageView(new Image(imageProfilePath));
+        profileIcon.setFitHeight(50);
+        profileIcon.setPreserveRatio(true);
+        profileButton.setGraphic(profileIcon);
+        profileButton.setOnAction(event -> openProfile());
 
         /**
          TUTO de TOTOR
@@ -136,6 +150,7 @@ public class Window {
         mainWindow.getChildren().clear();
         if(isConnected){
             topPanel.getChildren().addAll(logo,topPanelBlank,profileButton, disconnectButton);
+
         }else{
             topPanel.getChildren().addAll(logo,topPanelBlank);
         }
@@ -147,10 +162,15 @@ public class Window {
         VBox.setVgrow(botPanel,Priority.NEVER);
         mainWindow.getChildren().addAll(screen);
     }
-    public void disconnect(){
+    public void disconnect(Stage primaryStage){
         isConnected=false;
         Login login = new Login(dbManager,primaryStage);
         primaryStage.setScene(login.getScene());
+    }
+
+    public void openProfile(){
+        Profile profile = new Profile(dbManager,primaryStage,dbManager.getTeacherByID(id));
+        primaryStage.setScene(profile.getScene());
     }
     public Scene getScene() {
         return scene;
@@ -168,6 +188,7 @@ public class Window {
         container.getChildren().add(titleText);
         if(isConnected){
             this.topPanel.getChildren().addAll(logo,topPanelBlank,container,region,profileButton, disconnectButton);
+
         }
         else{
             this.topPanel.getChildren().addAll(logo,topPanelBlank,container,region);

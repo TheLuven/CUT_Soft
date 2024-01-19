@@ -15,12 +15,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     public static void main(String[] args) {
-
-        //System.out.println(databaseManager.getTeacherByID(10).toString());
-        /*System.out.println(databaseManager.getStudentByID(7).toString());
-        System.out.println(databaseManager.getStudentClassByID(2).toString());
-        databaseManager.getActorByID(1).setSurname("test");
-        System.out.println(databaseManager.getActorByID(1).toString());*/
         launch(args);
     }
 
@@ -29,7 +23,6 @@ public class Main extends Application {
         DatabaseConnection database = new DatabaseConnection("jdbc:mysql://localhost:3306/base","root","");
         DatabaseManager databaseManager = new DatabaseManager(database);
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        //ClassMapEditor classMapEditor = new ClassMapEditor(databaseManager.getAllTeacherClassMapByTeacher(databaseManager.getTeacherByID(10)).get(0),databaseManager.getAllTeacherClassMapByTeacher(databaseManager.getTeacherByID(10)).get(0).getDrafts().get(1),screenBounds,primaryStage);
         Login login = new Login(databaseManager,primaryStage);
         primaryStage.setScene(login.getScene());
         primaryStage.setWidth(screenBounds.getWidth());

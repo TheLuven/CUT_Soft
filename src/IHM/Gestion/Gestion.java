@@ -21,13 +21,15 @@ public class Gestion {
     public Rectangle2D screenBounds;
     public double width;
     public double height;
+    public int id;
     public Stage stage;
-    public Gestion(ArrayList<ClassMap> classMaps, Rectangle2D screenBounds, Stage stage, DatabaseManager dbManager){
+    public Gestion(ArrayList<ClassMap> classMaps, Rectangle2D screenBounds, Stage stage, DatabaseManager dbManager, int id){
         this.stage = stage;
+        this.id = id;
         this.screenBounds = screenBounds;
         this.width = screenBounds.getWidth();
         this.height = screenBounds.getHeight();
-        this.template = new Window(stage,true,classMaps.get(0).getTeacher().getId(),dbManager);
+        this.template = new Window(stage,true,id,dbManager);
         this.grid = new GridPane();
         this.grid.setHgap(50);
         this.grid.setVgap(50);
