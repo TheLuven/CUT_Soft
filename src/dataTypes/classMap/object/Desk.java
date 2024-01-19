@@ -20,6 +20,11 @@ public class Desk {
         this.orientation = orientation;
     }
 
+    public Desk(double x, double y, String mono, DeskOrientation deskOrientation, Student studentByID) {
+        this(x,y,mono,deskOrientation);
+        this.student = studentByID;
+    }
+
     public double getX() {
         return x;
     }
@@ -79,8 +84,18 @@ public class Desk {
 
     @Override
     public String toString() {
-        return "Desk{" +
+        //If there is a student in the desk we print his name
+        if (student != null) return "Desk{" +
                 "type='" + type + '\'' +
+                ", orientation=" + orientation +
+                ", x=" + x +
+                ", y=" + y +
+                ", student name = "+student.getName()+" "+student.getSurname()+
+                '}';
+        else return "Desk{" +
+                "type='" + type + '\'' +
+                ", x=" + x +
+                ", y=" + y +
                 ", orientation=" + orientation +
                 '}';
     }

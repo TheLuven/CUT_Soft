@@ -22,12 +22,14 @@ public class Gestion {
     public double width;
     public double height;
     public Stage stage;
+    private DatabaseManager dbManager;
     public Gestion(ArrayList<ClassMap> classMaps, Rectangle2D screenBounds, Stage stage, DatabaseManager dbManager){
         this.stage = stage;
         this.screenBounds = screenBounds;
         this.width = screenBounds.getWidth();
         this.height = screenBounds.getHeight();
         this.template = new Window(stage,true,classMaps.get(0).getTeacher().getId(),dbManager);
+        this.dbManager = dbManager;
         this.grid = new GridPane();
         this.grid.setHgap(50);
         this.grid.setVgap(50);
@@ -46,7 +48,19 @@ public class Gestion {
         this.template.getMiddlePanel().getChildren().add(this.scrollPane);
         this.template.setTitle("Gestion");
     }
-
+    public void reload(){
+        for(ClassMap c : this.classMaps){
+            c.getAllLocal();
+        }
+        for (ClassMapCard c : this.classCardList){
+            c.reloadCurrentClassMap();
+        }
+        this.grid.getChildren().clear();
+        createClassGrid(this.stage);
+    }
+    public DatabaseManager getDataBaseManager(){
+        return this.dbManager;
+    }
     public void createClassGrid(Stage stage){
         int index = 0;
         int line = 0;

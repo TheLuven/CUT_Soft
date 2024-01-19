@@ -4,6 +4,7 @@ import dataTypes.actors.Student;
 import dataTypes.classMap.ClassMap;
 import dataTypes.classMap.ClassMapLayer;
 import dataTypes.classMap.object.*;
+import database.DatabaseManager;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,10 +12,14 @@ import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import IHM.Window.Window;
+import org.json.simple.JSONObject;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ClassMapEditor {
@@ -35,31 +40,123 @@ public class ClassMapEditor {
     private ListView<ClassMapLayer> predifinedClassMap;
     private Gestion gestion;
     private Button saveButton;
-    private Button cancelButton;
+    private Button sendButton;
     private Button backButton;
-    public ClassMapEditor(ClassMap ClassMap,ClassMapLayer classMapLayer, Rectangle2D screenBounds, Stage stage,Gestion gestion){
+    private String draftName;
+    private Button deleteButton;
+    private DatabaseManager dbManager;
+    public ClassMapEditor(ClassMap classMap, ClassMapLayer classMapLayer, Rectangle2D screenBounds, Stage stage, Gestion gestion, DatabaseManager dbManager){
         this.gestion = gestion;
         this.classMapLayer = classMapLayer;
         this.screenBounds = screenBounds;
         this.splitView = new SplitPane();
+        this.draftName = classMapLayer.getName();
         this.stage = stage;
         this.window = new Window();
         //window.getScene().getStylesheets().add("style.css");
-        this.classMap = ClassMap;
+        this.classMap = classMap;
         this.studentList = classMap.getaClass().getStudents();
         this.mapEditor = new Pane();
         this.room = new Pane();
+        this.dbManager = dbManager;
+        this.deleteButton = new Button("X");
+        //Reduce font size and change color to white
+        this.deleteButton.setStyle("-fx-font-size: 8px;-fx-text-fill: #ffffff;");
+        this.deleteButton.setStyle("-fx-background-color: #ff0000;");
         display();
         window.setTitle("Class Map Editor - "+classMap.getaClass().getClassName()+" - "+classMap.getSubject().getSubjectName()+" - "+classMap.getTeacher().getSurname()+" "+classMap.getTeacher().getName());
     }
     public void displayBotButtons(){
         this.saveButton = new Button("Save");
-        this.cancelButton = new Button("Cancel");
+        this.sendButton = new Button("Send to the Server");
+        this.addSendButtonAction();
+        Region region = new Region();
+        HBox.setHgrow(region, javafx.scene.layout.Priority.ALWAYS);
         this.backButton = new Button("Back");
         this.backButton.setOnAction(event -> {
             this.stage.setScene(this.gestion.getScene());
+            this.gestion.reload();
         });
-        this.window.getBotPanel().getChildren().addAll(this.saveButton,this.cancelButton,this.backButton);
+        this.addSaveButtonAction();
+        //DIsable send to server button
+        this.sendButton.setDisable(true);
+        this.window.getBotPanel().getChildren().addAll(this.saveButton,this.backButton,region,this.sendButton);
+    }
+    private void addSendButtonAction(){
+        this.sendButton.setOnAction(actionEvent -> {
+            double roomWidth = this.classMapLayer.getRoom().getWidth();
+            double roomHeight = this.classMapLayer.getRoom().getHeight();
+            BoardOrientation boardOrientation = this.classMapLayer.getRoom().getBoardOrientation();
+            String roomName = this.draftName;
+            int classId = this.classMap.getaClass().getClassId();
+            int subjectId = this.classMap.getSubject().getSubjectId();
+            dbManager.deleteAllCoordinateOfASubject(subjectId);
+            try {
+                dbManager.updateAClassSubject(classId,subjectId,roomWidth,roomHeight,roomName,"online",boardOrientation.toString());
+            }catch (Exception e){
+                dbManager.updateClassStatus(classId,subjectId,"undefined");
+            }
+            try {
+                for (Desk desk : this.classMapLayer.getDesks()){
+                    if (desk.getStudent()!=null){
+                        dbManager.setACoordinate(desk.getX(),desk.getY(),subjectId,desk.getOrientation().toString(),desk.getStudent().getId());
+                    }else{
+                        dbManager.setACoordinate(desk.getX(),desk.getY(),subjectId,desk.getOrientation().toString());
+                    }
+                }
+            }catch (Exception e){
+                dbManager.updateClassStatus(classId, subjectId,"undefined");
+            }
+            this.gestion.reload();
+            this.stage.setScene(this.gestion.getScene());
+        });
+    }
+    public void addSaveButtonAction(){
+        this.saveButton.setOnAction(event -> {
+            JSONObject draft = new JSONObject();
+            double roomWidth = this.classMapLayer.getRoom().getWidth();
+            double roomHeight = this.classMapLayer.getRoom().getHeight();
+            BoardOrientation boardOrientation = this.classMapLayer.getRoom().getBoardOrientation();
+            draft.put("name",this.draftName);
+            draft.put("roomWidth",roomWidth);
+            draft.put("roomHeight",roomHeight);
+            draft.put("boardOrientation",boardOrientation.toString());
+            //Get desks
+            ArrayList<JSONObject> desks = new ArrayList<>();
+            for (Desk desk : this.classMapLayer.getDesks()){
+                JSONObject deskJSON = new JSONObject();
+                deskJSON.put("orientation",desk.getOrientation().toString());
+                deskJSON.put("x",desk.getX());
+                deskJSON.put("y",desk.getY());
+                if (desk.getStudent()!=null){
+                    deskJSON.put("student_id",desk.getStudent().getId());
+                }else{
+                    deskJSON.put("student_id",null);
+                }
+                desks.add(deskJSON);
+            }
+            draft.put("desks",desks);
+            //Save the JSON object in a local JSON file
+            try {
+                String classMapName = this.classMap.getaClass().getClassName();
+                String subjectName = this.classMap.getSubject().getSubjectName();
+                //Create the directory if it doesn't exist
+                java.io.File directory = new java.io.File("Drafts/"+classMapName+"/"+subjectName);
+                directory.mkdirs();
+
+                //Create the file
+                FileWriter JSONFile = new FileWriter("Drafts/"+classMapName+"/"+subjectName+"/"+this.draftName+".json");
+                JSONFile.write(draft.toJSONString());
+                System.out.println("Successfully Copied JSON Object to File...");
+                System.out.println("\nJSON Object: " + draft);
+                JSONFile.flush();
+                JSONFile.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            this.gestion.reload();
+            this.stage.setScene(this.gestion.getScene());
+        });
     }
     public void display(){
         displayTabPane();
@@ -212,6 +309,9 @@ public class ClassMapEditor {
             if(desk.getType().equals("mono")){
                 drawMonoDesk(desk,roomWidthRatio,roomHeightRatio,0,0);
             }
+            if (desk.getStudent()!=null){
+                this.listView.getItems().remove(desk.getStudent());
+            }
         }
     }
     public void addDropEvent(Pane deskBox,Desk desk){
@@ -285,6 +385,9 @@ public class ClassMapEditor {
                 deskBox.getChildren().addAll(studentName,studentSurname);
                 desk.setStudent(student);
 
+            }
+            if(this.listView.getItems().isEmpty()){
+                this.sendButton.setDisable(false);
             }
             event.consume();
         });
@@ -375,6 +478,7 @@ public class ClassMapEditor {
                 Student student = studentList.get(Integer.parseInt(studentIndex));
                 listView.getItems().add(student);
                 dragEvent.setDropCompleted(true);
+                this.sendButton.setDisable(true);
             };
             dragEvent.consume();
         });
@@ -399,6 +503,7 @@ public class ClassMapEditor {
                 displayRoom();
                 displayDesk();
                 displayBoard();
+                refillListView();
             }
         });
         deskView.setOnDragDetected(event -> {
@@ -411,6 +516,11 @@ public class ClassMapEditor {
             }
             event.consume();
         });
+    }
+    private void refillListView(){
+        this.listView.getItems().clear();
+        this.listView.getItems().addAll(this.studentList);
+        this.sendButton.setDisable(true);
     }
     private void setDragDeskEvent(){
         this.room.setOnDragOver(event -> {
@@ -430,7 +540,9 @@ public class ClassMapEditor {
                     double x = dragEvent.getX();
                     double y = dragEvent.getY();
                     if(desk.getType().equals("mono")){
+                        Desk deskToAdd = new Desk(x/roomWidthRatio,y/roomHeightRatio,"mono",desk.getOrientation());
                         drawMonoDesk(desk,roomWidthRatio,roomHeightRatio,x,y);
+                        this.classMapLayer.addDesk(deskToAdd);
                     }
                     else if(desk.getType().equals("duo")){
                         Desk desk1;
@@ -444,13 +556,52 @@ public class ClassMapEditor {
                         }
                         drawMonoDesk(desk1,roomWidthRatio,roomHeightRatio,x,y);
                         drawMonoDesk(desk2,roomWidthRatio,roomHeightRatio,x,y);
+                        if (desk.getOrientation() == DeskOrientation.vertical){
+                            desk1.setX(x/roomWidthRatio);
+                            desk1.setY(y/roomHeightRatio);
+                            desk2.setX(x/roomWidthRatio);
+                            desk2.setY((y)/roomHeightRatio+desk.getHeight()/2);
+                        }else{
+                            desk1.setX(x/roomWidthRatio);
+                            desk1.setY(y/roomHeightRatio);
+                            desk2.setX((x)/roomWidthRatio+desk.getWidth()/2);
+                            desk2.setY(y/roomHeightRatio);
+                        }
+                        this.classMapLayer.addDesk(desk1);
+                        this.classMapLayer.addDesk(desk2);
                     }
+                    System.out.println(this.classMapLayer.getDesks());
+                    System.out.println(this.classMapLayer.getDesks().size());
                 }
             }
         });
     }
     public Scene getScene(){
         return this.window.getScene();
+    }
+
+    private void addMouseOverEvent(Pane deskBox, Desk desk){
+        deskBox.setOnMouseEntered(event -> {
+                deskBox.getChildren().add(this.deleteButton);
+                //Delete button is 1/5 of the width of the deskbox
+                this.deleteButton.setMaxWidth(10);
+                this.deleteButton.setMaxHeight(10);
+                this.deleteButton.setOnAction(event1 -> {
+                    this.classMapLayer.removeDesk(desk);
+                    this.room.getChildren().remove(deskBox);
+                    if (desk.getStudent()!=null){
+                        this.listView.getItems().add(desk.getStudent());
+                        this.sendButton.setDisable(true);
+                    }
+                    System.out.println(this.classMapLayer.getDesks());
+                    System.out.println(this.classMapLayer.getDesks().size());
+                });
+        });
+        deskBox.setOnMouseExited(event -> {
+            if (deskBox.getChildren().contains(this.deleteButton)){
+                deskBox.getChildren().remove(this.deleteButton);
+            }
+        });
     }
 
     public void drawMonoDesk(Desk desk,double roomWidthRatio,double roomHeightRatio,double x,double y){
@@ -462,6 +613,21 @@ public class ClassMapEditor {
         deskBox.setStyle("-fx-background-color: #525a69;-fx-border-color: #ffffff;");
         addDropEvent(deskBox,desk);
         addDragEvent(desk,deskBox);
+        addMouseOverEvent(deskBox,desk);
+        if (desk.getStudent()!=null){
+            Student student = desk.getStudent();
+            //add the student to the desk
+            Text studentName = new Text(student.getName());
+            Text studentSurname = new Text(student.getSurname());
+            //center student name and change the color to white
+            studentSurname.setLayoutX(deskBox.getPrefWidth()/2-studentSurname.getLayoutBounds().getWidth()/2);
+            studentSurname.setLayoutY(deskBox.getPrefHeight()/2-studentSurname.getLayoutBounds().getHeight()/2+studentName.getLayoutBounds().getHeight());
+            studentSurname.setStyle("-fx-fill: #ffffff;");
+            studentName.setLayoutX(deskBox.getPrefWidth()/2-studentName.getLayoutBounds().getWidth()/2);
+            studentName.setLayoutY(deskBox.getPrefHeight()/2-studentName.getLayoutBounds().getHeight()/2);
+            studentName.setStyle("-fx-fill: #ffffff;");
+            deskBox.getChildren().addAll(studentName,studentSurname);
+        }
         this.room.getChildren().add(deskBox);
     }
 }

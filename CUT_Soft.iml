@@ -11,5 +11,6 @@
     <orderEntry type="library" name="JavaFXMac" level="project" />
     <orderEntry type="library" name="JavaFXWin" level="project" />
     <orderEntry type="library" name="mysql-connector-j-8.2.0" level="project" />
+    <orderEntry type="library" name="json-simple-1.1.1" level="project" />
   </component>
 </module>

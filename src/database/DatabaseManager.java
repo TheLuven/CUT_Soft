@@ -1,9 +1,13 @@
 package database;
 
 import dataTypes.classMap.ClassMap;
+import dataTypes.classMap.ClassMapLayer;
 import dataTypes.classMap.Subject;
 import dataTypes.actors.*;
+import dataTypes.classMap.object.BoardOrientation;
 import dataTypes.classMap.object.Class;
+import dataTypes.classMap.object.Desk;
+import dataTypes.classMap.object.DeskOrientation;
 import javafx.scene.text.Text;
 
 import java.sql.Connection;
@@ -11,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DatabaseManager {
     DatabaseConnection database;
@@ -156,7 +161,7 @@ public class DatabaseManager {
             String subject = resultSet.getString("subject");
             int teacher = resultSet.getInt("teacher");
             connection.close();
-            return new Subject(subject,getTeacherByID(teacher));
+            return new Subject(subject,getTeacherByID(teacher),id);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -172,7 +177,7 @@ public class DatabaseManager {
             resultSet.next();
             String subject = resultSet.getString("subject");
             connection.close();
-            return new Subject(subject,teacher);
+            return new Subject(subject,teacher,id);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -265,7 +270,7 @@ public class DatabaseManager {
             ArrayList<Student> students = getClassStudentsByID(id);
             ArrayList<Subject> subjects = getClassSubjectsByID(id);
             connection.close();
-            return new Class(students,className,subjects);
+            return new Class(students,className,subjects,id);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -283,7 +288,7 @@ public class DatabaseManager {
             ArrayList<Student> students = getClassStudentsByID(id);
             ArrayList<Subject> subjects = getClassSubjectsByID(id,teacher);
             connection.close();
-            return new Class(students,className,subjects);
+            return new Class(students,className,subjects,id);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -379,5 +384,209 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         return check;
+    }
+    /**
+     * @brief
+     * @author Victor VENULETH
+     * @param
+     * @return
+     */
+    public void updateACoordinate(int id,double x, double y,int subjectID,String desk_orientation) {
+        try {
+            Connection connection = this.database.getConnection();
+            String updateQuery = "UPDATE coordinate " +
+                                 "SET x = ?, y = ?, subject = ?, desk_orientation = ? " +
+                                 "WHERE id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+            preparedStatement.setDouble(1, x);
+            preparedStatement.setDouble(2, y);
+            preparedStatement.setInt(3, subjectID);
+            preparedStatement.setString(4, desk_orientation);
+            preparedStatement.setInt(5, id);
+            System.out.println("[DEBUG] Update Query : "+preparedStatement.toString());
+            // Execute the update query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+            System.out.println("[DEBUG] "+rowsAffected + " row(s) updated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * @brief
+     * @author Victor VENULETH
+     * @param
+     * @return
+     */
+    public void setACoordinate(double x, double y,int subjectID,String desk_orientation) {
+        try {
+            Connection connection = this.database.getConnection();
+            String setQuery = "INSERT INTO coordinate (x,y,subject,desk_orientation) VALUES (?,?,?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(setQuery);
+            preparedStatement.setDouble(1, x);
+            preparedStatement.setDouble(2, y);
+            preparedStatement.setInt(3, subjectID);
+            preparedStatement.setString(4, desk_orientation);
+            // Execute the insert query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+            System.out.println("[DEBUG] "+rowsAffected + " row(s) inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void deleteAllCoordinateOfASubject(int subjectID){
+        try {
+            Connection connection = this.database.getConnection();
+            //Delete all row where subject_id = subjectID
+            String deleteQuery = "DELETE FROM coordinate WHERE subject = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
+            preparedStatement.setInt(1, subjectID);
+            // Execute the delete query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void setACoordinate(double x, double y,int subjectID,String desk_orientation,int studentID) {
+        try {
+            Connection connection = this.database.getConnection();
+            String setQuery = "INSERT INTO coordinate (x,y,subject,desk_orientation,person) VALUES (?,?,?,?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(setQuery);
+            preparedStatement.setDouble(1, x);
+            preparedStatement.setDouble(2, y);
+            preparedStatement.setInt(3, subjectID);
+            preparedStatement.setString(4, desk_orientation);
+            preparedStatement.setInt(5, studentID);
+            // Execute the insert query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+            System.out.println("[DEBUG] "+rowsAffected + " row(s) inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * @brief
+     * @author Victor VENULETH
+     * @param
+     * @return
+     */
+    public void updateAClassSubject(int class_id,int subject_id,double width, double height,String room_name,String class_status,String board_orientation) {
+        try {
+            Connection connection = this.database.getConnection();
+            String updateQuery = "UPDATE classsubject SET width = ? ,height = ? ,room_name = ? ,class_status = ? ,board_orientation = ? WHERE class = ? AND subject = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+            preparedStatement.setDouble(1, width);
+            preparedStatement.setDouble(2, height);
+            preparedStatement.setString(3, room_name);
+            preparedStatement.setString(4, class_status);
+            preparedStatement.setString(5, board_orientation);
+            preparedStatement.setInt(6, class_id);
+            preparedStatement.setInt(7, subject_id);
+            System.out.println("[DEBUG] Update Query : "+preparedStatement.toString());
+            // Execute the update query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+            System.out.println("[DEBUG] "+rowsAffected + " row(s) updated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void updateClassStatus(int class_id,int subject_id, String status){
+        try {
+            Connection connection = this.database.getConnection();
+            String updateQuery = "UPDATE classsubject SET class_status = ? WHERE class = ? AND subject = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+            preparedStatement.setString(1, status);
+            preparedStatement.setInt(2, class_id);
+            preparedStatement.setInt(3, subject_id);
+            System.out.println("[DEBUG] Update Query : "+preparedStatement.toString());
+            // Execute the update query
+            int rowsAffected = preparedStatement.executeUpdate();
+            // Check the number of rows affected
+            connection.close();
+            System.out.println("[DEBUG] "+rowsAffected + " row(s) updated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<Desk> getAllCordinateOfASubject(int subjectID, Class aClass){
+        try {
+            ArrayList<Desk> desks = new ArrayList<>();
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT person,desk_orientation,x,y FROM coordinate WHERE subject="+subjectID;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                int person = resultSet.getInt("person");
+                DeskOrientation deskOrientation;
+                String desk_orientation = resultSet.getString("desk_orientation");
+                if (desk_orientation.equals("horizontal")) deskOrientation = DeskOrientation.horizontal;
+                else deskOrientation = DeskOrientation.vertical;
+                double x = resultSet.getDouble("x");
+                double y = resultSet.getDouble("y");
+                desks.add(new Desk(x,y,"mono",deskOrientation,aClass.getStudentByID(person)));
+            }
+            System.out.println(desks);
+            connection.close();
+            return desks;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public ClassMapLayer getCurrentClassMap(int class_id, int subject){
+        try {
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT width,height,class_status,board_orientation FROM classsubject WHERE class="+class_id+" AND subject="+subject;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            double width = resultSet.getDouble("width");
+            double height = resultSet.getDouble("height");
+            String class_status = resultSet.getString("class_status");
+            String board_orientation = resultSet.getString("board_orientation");
+            connection.close();
+            BoardOrientation bo = BoardOrientation.north;
+            if (board_orientation.equals("north")) bo = BoardOrientation.north;
+            else if (board_orientation.equals("south")) bo = BoardOrientation.south;
+            else if (board_orientation.equals("east")) bo = BoardOrientation.east;
+            else if (board_orientation.equals("west")) bo = BoardOrientation.west;
+            ClassMapLayer classMapLayer = new ClassMapLayer("Current ClassMap",width,height,bo);
+            for(Desk desk : getAllCordinateOfASubject(subject,getClassByID(class_id))){
+                classMapLayer.addDesk(desk);
+            }
+            return classMapLayer;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getClassMapStatus(int class_id,int subject_id){
+        try {
+            Connection connection = this.database.getConnection();
+            String selectQuery = "SELECT class_status FROM classsubject WHERE class="+class_id+" AND subject="+subject_id;
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            // Execute the query and get the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            String status = resultSet.getString("class_status");
+            connection.close();
+            return status;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
