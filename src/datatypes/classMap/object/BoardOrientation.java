@@ -1,4 +1,4 @@
-package dataTypes.classMap.object;
+package datatypes.classMap.object;
 
 public enum BoardOrientation {
     north,

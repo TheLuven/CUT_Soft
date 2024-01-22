@@ -1,4 +1,4 @@
-package dataTypes.actors;
+package datatypes.actors;
 
 import database.DatabaseManager;
 /**

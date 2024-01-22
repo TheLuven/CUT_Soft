@@ -7,22 +7,20 @@ package database;
  * @version 1.0
  * @date 01/01/2024
  */
-import dataTypes.classMap.ClassMap;
-import dataTypes.classMap.ClassMapLayer;
-import dataTypes.classMap.Subject;
-import dataTypes.actors.*;
-import dataTypes.classMap.object.BoardOrientation;
-import dataTypes.classMap.object.Class;
-import dataTypes.classMap.object.Desk;
-import dataTypes.classMap.object.DeskOrientation;
-import javafx.scene.text.Text;
+import datatypes.classMap.ClassMap;
+import datatypes.classMap.ClassMapLayer;
+import datatypes.classMap.Subject;
+import datatypes.actors.*;
+import datatypes.classMap.object.BoardOrientation;
+import datatypes.classMap.object.Class;
+import datatypes.classMap.object.Desk;
+import datatypes.classMap.object.DeskOrientation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class DatabaseManager {
     private DatabaseConnection database;
@@ -357,7 +355,7 @@ public class DatabaseManager {
         ArrayList<ClassMap> classMaps = new ArrayList<>();
         try {
             Connection connection = this.database.getConnection();
-            String selectQuery = "SELECT cs.class,cs.subject  FROM classSubject cs, person p,subject s  WHERE p.`role` = 'teacher' AND s.teacher = p.id AND s.id = cs.subject AND p.id ="+teacher.id;
+            String selectQuery = "SELECT cs.class,cs.subject  FROM classSubject cs, person p,subject s  WHERE p.`role` = 'teacher' AND s.teacher = p.id AND s.id = cs.subject AND p.id ="+teacher.getId();
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
             // Execute the query and get the result
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -544,7 +542,7 @@ public class DatabaseManager {
     public void updateAClassSubject(int class_id,int subject_id,double width, double height,String room_name,String class_status,String board_orientation) {
         try {
             Connection connection = this.database.getConnection();
-            String updateQuery = "UPDATE classsubject SET width = ? ,height = ? ,room_name = ? ,class_status = ? ,board_orientation = ? WHERE class = ? AND subject = ?";
+            String updateQuery = "UPDATE classSubject SET width = ? ,height = ? ,room_name = ? ,class_status = ? ,board_orientation = ? WHERE class = ? AND subject = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setDouble(1, width);
             preparedStatement.setDouble(2, height);
@@ -574,7 +572,7 @@ public class DatabaseManager {
     public void updateClassStatus(int class_id,int subject_id, String status){
         try {
             Connection connection = this.database.getConnection();
-            String updateQuery = "UPDATE classsubject SET class_status = ? WHERE class = ? AND subject = ?";
+            String updateQuery = "UPDATE classSubject SET class_status = ? WHERE class = ? AND subject = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setString(1, status);
             preparedStatement.setInt(2, class_id);
@@ -634,7 +632,7 @@ public class DatabaseManager {
     public ClassMapLayer getCurrentClassMap(int class_id, int subject){
         try {
             Connection connection = this.database.getConnection();
-            String selectQuery = "SELECT width,height,class_status,board_orientation FROM classsubject WHERE class="+class_id+" AND subject="+subject;
+            String selectQuery = "SELECT width,height,class_status,board_orientation FROM classSubject WHERE class="+class_id+" AND subject="+subject;
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
             // Execute the query and get the result
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -669,7 +667,7 @@ public class DatabaseManager {
     public String getClassMapStatus(int class_id,int subject_id){
         try {
             Connection connection = this.database.getConnection();
-            String selectQuery = "SELECT class_status FROM classsubject WHERE class="+class_id+" AND subject="+subject_id;
+            String selectQuery = "SELECT class_status FROM classSubject WHERE class="+class_id+" AND subject="+subject_id;
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
             // Execute the query and get the result
             ResultSet resultSet = preparedStatement.executeQuery();

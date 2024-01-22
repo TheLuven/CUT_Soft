@@ -5,10 +5,10 @@ package IHM.Gestion;
  * @version 1.0.0
  * @date 2024/01/02
  ***********************************************************/
-import dataTypes.actors.Student;
-import dataTypes.classMap.ClassMap;
-import dataTypes.classMap.ClassMapLayer;
-import dataTypes.classMap.object.*;
+import datatypes.actors.Student;
+import datatypes.classMap.ClassMap;
+import datatypes.classMap.ClassMapLayer;
+import datatypes.classMap.object.*;
 import database.DatabaseManager;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -489,7 +489,7 @@ public class ClassMapEditor {
         this.splitView.getItems().addAll(tabPane,this.mapEditor);
         listView.getItems().addAll(this.studentList);
         this.deskView=new ListView<>();
-        this.deskView.getItems().addAll(dataTypes.classMap.object.Desk.getDeskTypeList());
+        this.deskView.getItems().addAll(datatypes.classMap.object.Desk.getDeskTypeList());
         this.predifinedClassMap=new ListView<>();
         ClassTemplate classTemplate = new ClassTemplate();
         this.predifinedClassMap.getItems().addAll(classTemplate.getClassMapLayers());

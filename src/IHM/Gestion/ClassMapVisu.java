@@ -7,11 +7,11 @@ package IHM.Gestion;
  * @brief most of the mapEditor function are exactly the same
  */
 import IHM.Window.Window;
-import dataTypes.actors.Student;
-import dataTypes.classMap.ClassMap;
-import dataTypes.classMap.ClassMapLayer;
-import dataTypes.classMap.object.BoardOrientation;
-import dataTypes.classMap.object.Desk;
+import datatypes.actors.Student;
+import datatypes.classMap.ClassMap;
+import datatypes.classMap.ClassMapLayer;
+import datatypes.classMap.object.BoardOrientation;
+import datatypes.classMap.object.Desk;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;

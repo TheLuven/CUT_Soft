@@ -1,13 +1,13 @@
-package dataTypes.classMap;
+package datatypes.classMap;
 /*******************************
  * @aurhor Victor VENULETH
  * @date 10/01/2024
  *******************************/
 
-import dataTypes.classMap.object.BoardOrientation;
-import dataTypes.classMap.object.Desk;
-import dataTypes.classMap.object.DeskOrientation;
-import dataTypes.classMap.object.Room;
+import datatypes.classMap.object.BoardOrientation;
+import datatypes.classMap.object.Desk;
+import datatypes.classMap.object.DeskOrientation;
+import datatypes.classMap.object.Room;
 
 import java.util.ArrayList;
 

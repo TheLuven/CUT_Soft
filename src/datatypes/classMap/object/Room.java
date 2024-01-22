@@ -1,4 +1,4 @@
-package dataTypes.classMap.object;
+package datatypes.classMap.object;
 /**
  * @Author Victor VENULETH
  * @Version 1.0

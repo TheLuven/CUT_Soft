@@ -1,10 +1,10 @@
-package dataTypes.classMap.object;
+package datatypes.classMap.object;
 /*********************
  * @author Victor VENULETH
  * @date 05/01/2024
  ********************/
 
-import dataTypes.actors.Student;
+import datatypes.actors.Student;
 
 import java.util.ArrayList;
 

@@ -6,7 +6,7 @@ package IHM.Gestion;
  * @brief This class is the main page of the application. It shows every classCard of the teacher
  */
 import IHM.Window.Window;
-import dataTypes.classMap.ClassMap;
+import datatypes.classMap.ClassMap;
 import database.DatabaseManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;

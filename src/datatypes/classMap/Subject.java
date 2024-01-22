@@ -1,11 +1,10 @@
-package dataTypes.classMap;
+package datatypes.classMap;
 /*************************
  * @author Victor VENULETH
  * @date 10/01/2024
  ************************/
 
-import dataTypes.actors.Actor;
-import dataTypes.actors.Teacher;
+import datatypes.actors.Teacher;
 
 /**
  * @brief This class is used to represent a subject

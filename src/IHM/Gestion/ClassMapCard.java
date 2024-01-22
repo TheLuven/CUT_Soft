@@ -1,8 +1,8 @@
 package IHM.Gestion;
 
-import dataTypes.classMap.ClassMap;
-import dataTypes.classMap.ClassMapLayer;
-import dataTypes.classMap.object.BoardOrientation;
+import datatypes.classMap.ClassMap;
+import datatypes.classMap.ClassMapLayer;
+import datatypes.classMap.object.BoardOrientation;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;

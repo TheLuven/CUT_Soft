@@ -1,16 +1,16 @@
-package dataTypes.classMap;
+package datatypes.classMap;
 /**
  * @Author Victor VENULETH
  * @Version 1.0
  * @Date 02/01/2024
  * @brief This class is the main class to describe a Class. It contains all the information about the class. And all its classMapLayers as drafs and current ClassMap
  */
-import dataTypes.actors.Student;
-import dataTypes.actors.Teacher;
-import dataTypes.classMap.object.BoardOrientation;
-import dataTypes.classMap.object.Class;
-import dataTypes.classMap.object.Desk;
-import dataTypes.classMap.object.DeskOrientation;
+import datatypes.actors.Student;
+import datatypes.actors.Teacher;
+import datatypes.classMap.object.BoardOrientation;
+import datatypes.classMap.object.Class;
+import datatypes.classMap.object.Desk;
+import datatypes.classMap.object.DeskOrientation;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
