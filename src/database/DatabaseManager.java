@@ -1,5 +1,12 @@
 package database;
-
+/**
+ * @file DatabaseManager.java
+ * @brief This file is used to manage the database. It allows you to retrieve data from the database and update it.
+ * @author Victor VENULETH
+ * @modifier Yohan JAFFRE
+ * @version 1.0
+ * @date 01/01/2024
+ */
 import dataTypes.classMap.ClassMap;
 import dataTypes.classMap.ClassMapLayer;
 import dataTypes.classMap.Subject;
@@ -18,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class DatabaseManager {
-    DatabaseConnection database;
+    private DatabaseConnection database;
 
     /**
      * @brief Constructor of the DatabaseManager class. This class provide you some tools to access all data from the database.
@@ -169,6 +176,13 @@ public class DatabaseManager {
             return null;
         }
     }
+    /**
+     * @brief This function allows you to access the subject using its ID and attach it to the teacher.
+     * @author Victor VENULETH
+     * @param id
+     * @param teacher
+     * @return the Subject in the Subject.java object.
+     */
     public Subject getSubjectByID(int id,Teacher teacher) {
         try {
             Connection connection = this.database.getConnection();
@@ -235,6 +249,13 @@ public class DatabaseManager {
         }
         return subjects;
     }
+    /**
+     * @brief Give every subjects of a Class with the id and the Teacher.
+     * @author Victor VENULETH
+     * @param id
+     * @param teacher
+     * @return it returns all Subjects in an ArrayList
+     */
     public ArrayList<Subject> getClassSubjectsByID(int id,Teacher teacher){
         ArrayList<Subject> subjects = new ArrayList<>();
         try {
@@ -278,6 +299,13 @@ public class DatabaseManager {
             return null;
         }
     }
+    /**
+     * @brief This function gives you the class using the classID and the associated teacher to the class (for the subjects of the class).
+     * @author Victor VENULETH
+     * @param id
+     * @param teacher
+     * @return the class
+     */
     public Class getClassByID(int id,Teacher teacher){
         try {
             Connection connection = this.database.getConnection();
@@ -319,7 +347,12 @@ public class DatabaseManager {
             return null;
         }
     }
-
+    /**
+     * @brief This function gives all the classMap of a teacher using the teacher class;
+     * @author Victor VENULETH
+     * @param teacher
+     * @return the classMap in an ArrayList
+     */
     public ArrayList<ClassMap> getAllTeacherClassMapByTeacher(Teacher teacher){
         ArrayList<ClassMap> classMaps = new ArrayList<>();
         try {
@@ -388,10 +421,14 @@ public class DatabaseManager {
         return check;
     }
     /**
-     * @brief
+     * @brief update a coordinate in the database using its id and the new coordinate values (x,y) and the subject id and the desk orientation (horizontal or vertical) of the coordinate
      * @author Victor VENULETH
-     * @param
-     * @return
+     * @param id
+     * @param x
+     * @param y
+     * @param subjectID
+     * @param desk_orientation
+     * @return void
      */
     public void updateACoordinate(int id,double x, double y,int subjectID,String desk_orientation) {
         try {
@@ -416,10 +453,13 @@ public class DatabaseManager {
         }
     }
     /**
-     * @brief
+     * @brief Set a coordinate
      * @author Victor VENULETH
-     * @param
-     * @return
+     * @param x
+     * @param y
+     * @param subjectID
+     * @param desk_orientation
+     * @return void
      */
     public void setACoordinate(double x, double y,int subjectID,String desk_orientation) {
         try {
@@ -439,6 +479,12 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+    /**
+     * @brief Delete a coordinate using its id in the database
+     * @param subjectID
+     * @author Victor VENULETH
+     * @return void
+     */
     public void deleteAllCoordinateOfASubject(int subjectID){
         try {
             Connection connection = this.database.getConnection();
@@ -454,6 +500,16 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+    /**
+     * @brief Set a coordinate with a student
+     * @author Victor VENULETH
+     * @param x
+     * @param y
+     * @param subjectID
+     * @param desk_orientation
+     * @param studentID
+     * @return void
+     */
     public void setACoordinate(double x, double y,int subjectID,String desk_orientation,int studentID) {
         try {
             Connection connection = this.database.getConnection();
@@ -474,10 +530,16 @@ public class DatabaseManager {
         }
     }
     /**
-     * @brief
+     * @brief Update a class subject
      * @author Victor VENULETH
-     * @param
-     * @return
+     * @param class_id
+     * @param subject_id
+     * @param width
+     * @param height
+     * @param room_name
+     * @param class_status
+     * @param board_orientation
+     * @return void
      */
     public void updateAClassSubject(int class_id,int subject_id,double width, double height,String room_name,String class_status,String board_orientation) {
         try {
@@ -501,6 +563,14 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
+    /**
+     * @author Victor VENULETH
+     * @brief update a Class status in DB
+     * @param class_id
+     * @param subject_id
+     * @param status
+     */
     public void updateClassStatus(int class_id,int subject_id, String status){
         try {
             Connection connection = this.database.getConnection();
@@ -520,6 +590,13 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * @brief Get every desk of a subject in a class using the subject id and the class object
+     * @param subjectID
+     * @param aClass
+     * @auhtor Victor VENULETH
+     * @return ArrayList<Desk>
+     */
     public ArrayList<Desk> getAllCordinateOfASubject(int subjectID, Class aClass){
         try {
             ArrayList<Desk> desks = new ArrayList<>();
@@ -546,6 +623,14 @@ public class DatabaseManager {
             return null;
         }
     }
+
+    /**
+     * @brief get the current classMap sent to the server using the class_id and the subject_id
+     * @param class_id
+     * @param subject
+     * @auhtor Victor VENULETH
+     * @return ClassMapLayer
+     */
     public ClassMapLayer getCurrentClassMap(int class_id, int subject){
         try {
             Connection connection = this.database.getConnection();
@@ -574,7 +659,13 @@ public class DatabaseManager {
             return null;
         }
     }
-
+    /**
+     * @brief Get the current classMap status using the class_id and the subject_id
+     * @param class_id
+     * @param subject_id
+     * @auhtor Victor VENULETH
+     * @return String
+     */
     public String getClassMapStatus(int class_id,int subject_id){
         try {
             Connection connection = this.database.getConnection();

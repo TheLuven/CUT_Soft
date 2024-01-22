@@ -4,14 +4,19 @@ import dataTypes.actors.Student;
 import dataTypes.classMap.Subject;
 
 import java.util.ArrayList;
-
+    /**
+     * @Author Victor VENULETH
+     * @Version 1.0
+     * @Date 22/12/2023
+     * @brief Class used to describe the class of the classMap
+     */
 public class Class {
-    int classId;
-    public ArrayList<Student> students;
-    public ArrayList<Subject> subjects;
-    public String className;
-    public int studentNumber = 0;
-    public int subjectNumber = 0;
+    private int classId;
+    private ArrayList<Student> students;
+    private ArrayList<Subject> subjects;
+    private String className;
+    private int studentNumber = 0;
+    private int subjectNumber = 0;
     public Class(ArrayList<Student> students, String className, ArrayList<Subject> subjects,int classId){
         this.students = students;
         this.studentNumber = students.size();

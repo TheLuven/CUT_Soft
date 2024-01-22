@@ -1,5 +1,10 @@
 package dataTypes.classMap;
-
+/**
+ * @Author Victor VENULETH
+ * @Version 1.0
+ * @Date 02/01/2024
+ * @brief This class is the main class to describe a Class. It contains all the information about the class. And all its classMapLayers as drafs and current ClassMap
+ */
 import dataTypes.actors.Student;
 import dataTypes.actors.Teacher;
 import dataTypes.classMap.object.BoardOrientation;
@@ -31,6 +36,10 @@ public class ClassMap {
         this.drafts = new ArrayList<>();
         getAllLocal();
     }
+    /**
+     * @author Victor VENULETH
+     * @brief This method is used to get all the local drafts of the classMap. It use JSON files to store the drafts
+     */
     public void getAllLocal(){
         this.drafts.clear();
         //Check in the files if there is a directory with the same subject and class

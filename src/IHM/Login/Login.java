@@ -1,5 +1,10 @@
 package IHM.Login;
-
+/**
+ * @Author Yohan JAFFRE
+ * @Version 1.0
+ * @Date 02/01/2024
+ * @brief This class create the login page of the application
+ */
 import IHM.Gestion.Gestion;
 import IHM.Window.Window;
 import database.DatabaseManager;
@@ -72,6 +77,10 @@ public class Login{
         this.window.getMiddlePanel().getChildren().add(this.card);  // Ajout de la carte au milieu de la fenêtre
     }
 
+    /**
+     * @brief Check if the username and the password are correct
+     * @author Yohan JAFFRE
+     */
     public void id_check() {
         int id_get = dbManager.getIdByUsername(usernameField.getText()); // Récupère l'id via l'username
         if (id_get == -1) {

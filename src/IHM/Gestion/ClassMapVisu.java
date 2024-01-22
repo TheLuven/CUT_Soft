@@ -1,5 +1,11 @@
 package IHM.Gestion;
-
+/**
+ * @Author Victor VENULETH
+ * @Version 1.0
+ * @Date 15/01/2024
+ * @brief This class is very close to classMap editor but is focus on the visualization of the classMap
+ * @brief most of the mapEditor function are exactly the same
+ */
 import IHM.Window.Window;
 import dataTypes.actors.Student;
 import dataTypes.classMap.ClassMap;

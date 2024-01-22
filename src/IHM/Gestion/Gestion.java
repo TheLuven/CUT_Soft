@@ -1,5 +1,10 @@
 package IHM.Gestion;
-
+/**
+ * @Author Victor VENULETH
+ * @Version 1.0
+ * @Date 20/12/2023
+ * @brief This class is the main page of the application. It shows every classCard of the teacher
+ */
 import IHM.Window.Window;
 import dataTypes.classMap.ClassMap;
 import database.DatabaseManager;
@@ -13,16 +18,16 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class Gestion {
-    public Window template;
-    public GridPane grid;
-    public ArrayList<ClassMap> classMaps;
-    public ScrollPane scrollPane;
-    public ArrayList<ClassMapCard> classCardList;
-    public Rectangle2D screenBounds;
-    public double width;
-    public double height;
-    public int id;
-    public Stage stage;
+    private Window template;
+    private GridPane grid;
+    private ArrayList<ClassMap> classMaps;
+    private ScrollPane scrollPane;
+    private ArrayList<ClassMapCard> classCardList;
+    private Rectangle2D screenBounds;
+    private double width;
+    private double height;
+    private int id;
+    private Stage stage;
     private DatabaseManager dbManager;
     public Gestion(ArrayList<ClassMap> classMaps, Rectangle2D screenBounds, Stage stage, DatabaseManager dbManager, int id){
         this.stage = stage;
@@ -50,6 +55,11 @@ public class Gestion {
         this.template.getMiddlePanel().getChildren().add(this.scrollPane);
         this.template.setTitle("Gestion");
     }
+    /**
+     * @brief This method is used to refresh the window and information (THIS IS NOT OPTIMIZED AND RELOAD EVERYTHING)
+     * @author Victor VENULETH
+     * @// TODO: 12/01/2024 Optimize this method to reduce the number of request to the DB
+     */
     public void reload(){
         for(ClassMap c : this.classMaps){
             c.getAllLocal();
@@ -63,6 +73,12 @@ public class Gestion {
     public DatabaseManager getDataBaseManager(){
         return this.dbManager;
     }
+
+    /**
+     * @brief This method is used to create the grid of classCard and add them to the gridPane
+     * @author Victor VENULETH
+     * @param stage
+     */
     public void createClassGrid(Stage stage){
         int index = 0;
         int line = 0;

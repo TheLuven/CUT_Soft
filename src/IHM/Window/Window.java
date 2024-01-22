@@ -1,4 +1,11 @@
 package IHM.Window;
+/**
+ * @author Victor VENULETH
+ * @modifier Yohen JAFFRE
+ * @version 1.0
+ * @date 21/12/2023
+ * @brief This class is the main window of the application
+ */
 
 import IHM.Gestion.Gestion;
 import IHM.Login.Login;
@@ -20,7 +27,7 @@ import javafx.stage.Stage;
 
 public class Window {
     private Scene scene;
-    public boolean isConnected = false;
+    private boolean isConnected = false;
     private StackPane mainWindow;
     private Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
     private Stage primaryStage;
@@ -48,7 +55,7 @@ public class Window {
         this.id = id;
     }
 
-    public void init(){
+    private void init(){
         primaryStage = primaryStage;                   // Récupération de la fenêtre
 
 

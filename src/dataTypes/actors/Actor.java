@@ -1,10 +1,15 @@
 package dataTypes.actors;
 
 import database.DatabaseManager;
-
+/**
+ * @Author Victor VENULETH
+ * @Version 1.0
+ * @Date 22/12/2023
+ * @brief Abstract class used to describe all actors
+ */
 public abstract class Actor {
-    DatabaseManager source;
-    public int id;
+    protected DatabaseManager source;
+    protected int id;
     protected String name;
     protected String surname;
     protected String email;

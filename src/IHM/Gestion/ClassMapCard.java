@@ -18,7 +18,12 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-
+/**
+ * @Author Victor VENULETH
+ * @Version 1.0
+ * @Date 02/01/2024
+ * @brief This class is used to display a card for each classMap
+ */
 public class ClassMapCard {
     private ClassMap classMap;
     private VBox card;
@@ -49,6 +54,11 @@ public class ClassMapCard {
         setCurrentClassMap();
         this.currentClassMap = classMap.currentClassMap;
     }
+
+    /**
+     * @brief This method is used to generate the card of the classMap, with every necessary information in it
+     * @author Victor VENULETH
+     */
     public void cardGenerator(){
         //Create text Node
         Text className = new Text("Class Name : "+classMap.getaClass().getClassName());

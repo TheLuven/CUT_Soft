@@ -1,9 +1,18 @@
+/************************************************************
+ * @author Victor VENULETH
+ * @version 1.0.0
+ * @date 2024/01/15
+ ***********************************************************/
 package dataTypes.classMap.object;
 
 import dataTypes.classMap.ClassMapLayer;
 
 import java.util.ArrayList;
 
+/**
+ * @author Victor VENULETH
+ * @brief This class is used to create templates of classes
+ */
 public class ClassTemplate {
 
     private ArrayList<ClassMapLayer> classMapLayers = new ArrayList<>();
@@ -15,6 +24,11 @@ public class ClassTemplate {
         this.classMapLayers.add(classMapLayer5());
     }
 
+    /**
+     * @author Victor VENULETH
+     * @brief This function create a template of a class name Ramanujan
+     * @return ClassMapLayer
+     */
     private ClassMapLayer classMapLayer1(){
         ClassMapLayer classMapLayer = new ClassMapLayer("Room Ramanujan",6,10,BoardOrientation.north);
         classMapLayer.addDesk(new Desk(0,2,"duo",DeskOrientation.horizontal));
@@ -27,6 +41,11 @@ public class ClassTemplate {
         classMapLayer.addDesk(new Desk(4,8,"duo",DeskOrientation.horizontal));
         return classMapLayer;
     }
+    /**
+     * @author Victor VENULETH
+     * @brief This function create a template of a class name Room in U
+     * @return ClassMapLayer
+     */
     private ClassMapLayer classMapLayer2(){
         ClassMapLayer classMapLayer = new ClassMapLayer("Room U",8,10,BoardOrientation.north);
         classMapLayer.addDesk(new Desk(1,2,"duo",DeskOrientation.vertical));
@@ -39,7 +58,13 @@ public class ClassTemplate {
         classMapLayer.addDesk(new Desk(6.4,4,"duo",DeskOrientation.vertical));
         classMapLayer.addDesk(new Desk(6.4,6,"duo",DeskOrientation.vertical));
         return classMapLayer;
-    }private ClassMapLayer classMapLayer3(){
+    }
+    /**
+     * @author Victor VENULETH
+     * @brief This function create a template of a class name Hell
+     * @return ClassMapLayer
+     */
+    private ClassMapLayer classMapLayer3(){
         ClassMapLayer classMapLayer = new ClassMapLayer("Room Hell",19,8,BoardOrientation.north);
         classMapLayer.addDesk(new Desk(1,2,"duo",DeskOrientation.horizontal));
         classMapLayer.addDesk(new Desk(1,4,"duo",DeskOrientation.horizontal));
@@ -66,7 +91,13 @@ public class ClassTemplate {
         classMapLayer.addDesk(new Desk(16,4,"duo",DeskOrientation.horizontal));
         classMapLayer.addDesk(new Desk(16,6,"duo",DeskOrientation.horizontal));
         return classMapLayer;
-    }private ClassMapLayer classMapLayer4(){
+    }
+    /**
+     * @author Victor VENULETH
+     * @brief This function create a template of a class name Euler
+     * @return ClassMapLayer
+     */
+    private ClassMapLayer classMapLayer4(){
         ClassMapLayer classMapLayer = new ClassMapLayer("Room Euler",10,11,BoardOrientation.north);
         classMapLayer.addDesk(new Desk(1,2,"duo",DeskOrientation.vertical));
         classMapLayer.addDesk(new Desk(1,4,"duo",DeskOrientation.vertical));
@@ -87,7 +118,13 @@ public class ClassTemplate {
         classMapLayer.addDesk(new Desk(8,6,"duo",DeskOrientation.vertical));
         classMapLayer.addDesk(new Desk(8,8,"duo",DeskOrientation.vertical));
         return classMapLayer;
-    }private ClassMapLayer classMapLayer5(){
+    }
+    /**
+     * @author Victor VENULETH
+     * @brief This function create a template of a class name Anjou
+     * @return ClassMapLayer
+     */
+    private ClassMapLayer classMapLayer5(){
         ClassMapLayer classMapLayer = new ClassMapLayer("Room Anjou",32,14,BoardOrientation.north);
         classMapLayer.addDesk(new Desk(1,2,"duo",DeskOrientation.horizontal));
         classMapLayer.addDesk(new Desk(1,4,"duo",DeskOrientation.horizontal));
@@ -163,6 +200,11 @@ public class ClassTemplate {
         classMapLayer.addDesk(new Desk(20,12,"duo",DeskOrientation.horizontal));
         return classMapLayer;
     }
+    /**
+     * @author Victor VENULETH
+     * @brief This function return the list of classMapLayers
+     * @return ClassMapLayers
+     */
     public ArrayList<ClassMapLayer> getClassMapLayers(){
         return this.classMapLayers;
     }

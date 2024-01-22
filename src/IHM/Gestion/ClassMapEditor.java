@@ -1,5 +1,10 @@
 package IHM.Gestion;
-
+/************************************************************
+ * @author Victor VENULETH
+ * @modifier Yohan JAFFRE
+ * @version 1.0.0
+ * @date 2024/01/02
+ ***********************************************************/
 import dataTypes.actors.Student;
 import dataTypes.classMap.ClassMap;
 import dataTypes.classMap.ClassMapLayer;
@@ -21,7 +26,10 @@ import org.json.simple.JSONObject;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
+/**
+ * @author Victor VENULETH
+ * @brief This class is used to the editor used to modify the class map
+ */
 public class ClassMapEditor {
     private ClassMapLayer classMapLayer;
     private Rectangle2D screenBounds;
@@ -45,6 +53,16 @@ public class ClassMapEditor {
     private String draftName;
     private Button deleteButton;
     private DatabaseManager dbManager;
+    /**
+     * @author Victor VENULETH
+     * @brief Constructor of the class ClassMapEditor
+     * @param classMap The class map to edit
+     * @param classMapLayer The class map layer of the classMap
+     * @param screenBounds The screen bounds
+     * @param stage The current stage
+     * @param gestion Current gestion page
+     * @param dbManager The database manager
+     */
     public ClassMapEditor(ClassMap classMap, ClassMapLayer classMapLayer, Rectangle2D screenBounds, Stage stage, Gestion gestion, DatabaseManager dbManager){
         this.gestion = gestion;
         this.classMapLayer = classMapLayer;
@@ -66,7 +84,11 @@ public class ClassMapEditor {
         display();
         window.setTitle("Class Map Editor - "+classMap.getaClass().getClassName()+" - "+classMap.getSubject().getSubjectName()+" - "+classMap.getTeacher().getSurname()+" "+classMap.getTeacher().getName());
     }
-    public void displayBotButtons(){
+    /**
+     * @author Victor VENULETH
+     * @brief Display all the buttons at the bottom of the page
+     */
+    private void displayBotButtons(){
         this.saveButton = new Button("Save");
         this.sendButton = new Button("Send to the Server");
         this.addSendButtonAction();
@@ -82,6 +104,10 @@ public class ClassMapEditor {
         this.sendButton.setDisable(true);
         this.window.getBotPanel().getChildren().addAll(this.saveButton,this.backButton,region,this.sendButton);
     }
+    /**
+     * @author Victor VENULETH
+     * @brief Add the action to the send button
+     */
     private void addSendButtonAction(){
         this.sendButton.setOnAction(actionEvent -> {
             double roomWidth = this.classMapLayer.getRoom().getWidth();
@@ -111,7 +137,11 @@ public class ClassMapEditor {
             this.stage.setScene(this.gestion.getScene());
         });
     }
-    public void addSaveButtonAction(){
+    /**
+     * @author Victor VENULETH
+     * @brief Add the action to the save button
+     */
+    private void addSaveButtonAction(){
         this.saveButton.setOnAction(event -> {
             JSONObject draft = new JSONObject();
             double roomWidth = this.classMapLayer.getRoom().getWidth();
@@ -158,7 +188,11 @@ public class ClassMapEditor {
             this.stage.setScene(this.gestion.getScene());
         });
     }
-    public void display(){
+    /**
+     * @author Victor VENULETH
+     * @brief Display everything in the editor (The order is important)
+     */
+    private void display(){
         displayTabPane();
         displayRoom();
         displayDesk();
@@ -166,7 +200,11 @@ public class ClassMapEditor {
         displayBotButtons();
         setDragDeskEvent();
     }
-    public void displayRoom(){
+    /**
+     * @author Victor VENULETH
+     * @brief Display the room inside the mapEditor
+     */
+    private void displayRoom(){
         this.mapEditor.setPrefWidth(this.screenBounds.getWidth());
         this.mapEditor.setPrefHeight(this.screenBounds.getHeight());
         this.mapEditor.setStyle("-fx-background-color: #2b2d30;");
@@ -267,9 +305,13 @@ public class ClassMapEditor {
             }
         });
         this.mapEditor.getChildren().add(this.room);
-
     }
-    public void displayBoard(){
+
+    /**
+     * @author Victor VENULETH
+     * @brief Display the board inside the room
+     */
+    private void displayBoard(){
         Pane board = new BorderPane();
         board.setStyle("-fx-background-color: #000000;-fx-border-color: #ffffff;");
         if(this.classMapLayer.getRoom().getBoardOrientation()== BoardOrientation.north){
@@ -298,7 +340,11 @@ public class ClassMapEditor {
         }
         this.room.getChildren().add(board);
     }
-    public void displayDesk(){
+    /**
+     * @author Victor VENULETH
+     * @brief Display every desk of the class
+     */
+    private void displayDesk(){
         double roomWidth = this.room.getPrefWidth();
         double roomHeight = this.room.getPrefHeight();
         double roomWidthRatio = roomWidth/this.classMapLayer.getRoom().getWidth();
@@ -314,7 +360,11 @@ public class ClassMapEditor {
             }
         }
     }
-    public void addDropEvent(Pane deskBox,Desk desk){
+    /**
+     * @author Victor VENULETH
+     * @brief Add a drop event to a deskbox, it will react to a drop of a student
+     */
+    private void addDropEvent(Pane deskBox,Desk desk){
         //Allow drag and drop from different elements
         Text tempStudentName = new Text();
         deskBox.setOnDragEntered(event -> {
@@ -392,8 +442,11 @@ public class ClassMapEditor {
             event.consume();
         });
     }
-
-    public void addDragEvent(Desk desk,Pane deskBox){
+    /**
+     * @author Victor VENULETH
+     * @brief Add a Drag event to a deskbox, it will react to a drag of a student
+     */
+    private void addDragEvent(Desk desk,Pane deskBox){
         deskBox.setOnDragDetected(event -> {
             if (desk.getStudent() != null) {
                 Dragboard db = deskBox.startDragAndDrop(TransferMode.COPY);
@@ -418,8 +471,11 @@ public class ClassMapEditor {
             event.consume();
         });
     }
-
-    public void displayTabPane(){
+    /**
+     * @author Victor VENULETH
+     * @brief Display the left tab pane with 3 tabs (Student, Desk, Template)
+     */
+    private void displayTabPane(){
         HBox container = this.window.getMiddlePanel();
         TabPane tabPane = new TabPane();
         Tab studentPane = new Tab("Student");
@@ -517,11 +573,19 @@ public class ClassMapEditor {
             event.consume();
         });
     }
+    /**
+     * @author Victor VENULETH
+     * @brief Refill the list view with the student list
+     */
     private void refillListView(){
         this.listView.getItems().clear();
         this.listView.getItems().addAll(this.studentList);
         this.sendButton.setDisable(true);
     }
+    /**
+     * @author Victor VENULETH
+     * @brief Add a drop event in the room to add a desk
+     */
     private void setDragDeskEvent(){
         this.room.setOnDragOver(event -> {
             if (event.getGestureSource()==deskView) {
@@ -576,10 +640,20 @@ public class ClassMapEditor {
             }
         });
     }
+    /**
+     * @author Victor VENULETH
+     * @brief Get the current scene of the class map editor
+     * @return Scene The current scene
+     */
     public Scene getScene(){
         return this.window.getScene();
     }
-
+    /**
+     * @author Victor VENULETH
+     * @param desk The desk
+     * @param deskBox The deskbox
+     * @brief Add a mouse event to the deskbox to delete the desk
+     */
     private void addMouseOverEvent(Pane deskBox, Desk desk){
         deskBox.setOnMouseEntered(event -> {
                 deskBox.getChildren().add(this.deleteButton);
@@ -603,8 +677,16 @@ public class ClassMapEditor {
             }
         });
     }
-
-    public void drawMonoDesk(Desk desk,double roomWidthRatio,double roomHeightRatio,double x,double y){
+    /**
+     * @author Victor VENULETH
+     * @brief To draw a mono desk
+     * @param desk The desk to draw
+     * @param roomWidthRatio The ratio of the room width
+     * @param roomHeightRatio The ratio of the room height
+     * @param x The x position of the desk
+     * @param y The y position of the desk
+     */
+    private void drawMonoDesk(Desk desk,double roomWidthRatio,double roomHeightRatio,double x,double y){
         Pane deskBox = new Pane();
         deskBox.setPrefWidth(desk.getWidth()*roomWidthRatio);
         deskBox.setPrefHeight(desk.getHeight()*roomHeightRatio);

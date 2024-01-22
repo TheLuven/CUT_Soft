@@ -1,5 +1,10 @@
 package dataTypes.classMap.object;
-
+/**
+ * @Author Victor VENULETH
+ * @Version 1.0
+ * @Date 22/12/2023
+ * @brief Class used to describe the room of the classMap
+ */
 public class Room {
     private double width;
     private double height;

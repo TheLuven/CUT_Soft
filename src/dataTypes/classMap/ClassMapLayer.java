@@ -1,4 +1,8 @@
 package dataTypes.classMap;
+/*******************************
+ * @aurhor Victor VENULETH
+ * @date 10/01/2024
+ *******************************/
 
 import dataTypes.classMap.object.BoardOrientation;
 import dataTypes.classMap.object.Desk;
@@ -7,6 +11,11 @@ import dataTypes.classMap.object.Room;
 
 import java.util.ArrayList;
 
+/**
+ * @author Victor VENULETH
+ * @version 1.0
+ * @brief This class is used to represent a classmap layer. A class map layer contains the room and a list of desks. It can be sent to the server, or kept as a draft
+ */
 public class ClassMapLayer {
     private String name;
     private ArrayList<Desk> desks;
@@ -36,6 +45,10 @@ public class ClassMapLayer {
         return this.room;
     }
 
+    /**
+     * @autor Victor VENULETH
+     * @brief This function parse everyDesk in the classmap layer to divide every duo desk into 2 mono desk
+     */
     public void parseDesks(){
         //This function parse everyDesk in the classmap layer to divide every duo desk into 2 mono desk
         ArrayList<Desk> newDesks = new ArrayList<>();

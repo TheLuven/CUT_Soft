@@ -1,4 +1,10 @@
 package IHM.Profile;
+/**
+ * @Author Yohan JAFFRE
+ * @Version 1.0
+ * @Date 17/01/2024
+ * @brief This class is the profile page of the application
+ */
 
 import IHM.Gestion.Gestion;
 import IHM.Window.Window;
